@@ -5,17 +5,20 @@ import itertools
 # make center of cube in center should be rounding via center
 # make switch case
 # make annotations
+# rotate colors in cube
 
 rotations = {
-    'f': ('y', 1, 90),
-    # 'f': ()
+    'u': ('y', 1, 90), 'd': ('y', -1, -90),
+    'r': ('x', 1, 90), 'l': ('x', -1, -90),
+    'f': ('z', -1, 90), 'b': ('z', 1, -90)
 }
 
-def rotate(axis, line):  # comment it    | making animation
+def rotate(axis, line):  # comment it    | making animation # can call it layer
     for cubie in cubies:
         cubie.position, cubie.rotation = \
             round(cubie.world_position, 1), cubie.world_rotation  # maybe unused in future
-        # print(cubie.position, cubie.rotation)
+        # print('real', cubie.position, cubie.rotation)
+        # print('word', cubie.world_position, cubie.world_rotation)
         cubie.parent = urs.scene
     center.rotation = 0
 
@@ -26,26 +29,15 @@ def rotate(axis, line):  # comment it    | making animation
 
 def input(key):
     if key not in rotations:
-         return
+        return
+    action = False
     axis, line, rotation_degree = rotations[key]
-    # print(axis, line)
-    # shift = urs.held_keys['shift']
-    # rotate(axis, line)
-    rotate('y', 1)
+    shift = urs.held_keys['shift']
+    # if action:
+    rotate(axis, line)
+    rotation_degree = rotation_degree if not shift else -rotation_degree
     eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.5)')
-
-
-    # if urs.held_keys['f']:
-    #     center.animate_rotation_z(90, duration=.5)
-    # eval(f'center.animate_rotation_{axis}(90, duration=.5)')  # check spaces in duration
-
-    # if urs.held_keys['q']:
-    #     right = [i for i in cubies if i.x == 1]
-    #     for i in right:
-    #         i.animate_rotation_x(90, duration=.5)
-            # i.rotation_x += 90
-            # i = urs.scene
-        # print([i for i in right])
+    # urs.invoke(not action, delay=.5 + .11)
 
 
 class Cubie(urs.Entity):
@@ -54,9 +46,10 @@ class Cubie(urs.Entity):
         self.model = 'kek2.obj'
         self.scale = .5
         self.position = coord
+        self.i = 1 if coord == (1, 1, 1) else 0
 
-        if self.y == 0:
-            self.color = urs.color.black
+        # if self.y == 0:
+        #     self.color = urs.color.black
         # if pos == (-1, -1, -1):
         # if pos == (1, 1, 1):Q
         #     self.color = urs.color.black
@@ -72,9 +65,10 @@ cubies = list()
 for coordinates in itertools.product((-1, 0, 1), repeat=3):
     cubies.append(Cubie(coordinates))
 
+action = True
+
 
 urs.EditorCamera()
 # ursina.camera.position = (0, 0, 10)
-
 
 app.run()
