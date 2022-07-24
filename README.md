@@ -4,6 +4,7 @@
 * параметры к кубу можно хранить в конфиг файле
 * добавить время выполнения
 * make __slots__
+* make good naming in .mtl fornmat and replace in ok order colors
 
 
 * make F R U B L D
