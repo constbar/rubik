@@ -1,4 +1,5 @@
 # if shuffled state starts - dont write the turns to somewhere
+import copy
 
 from rubik import State
 import os
@@ -19,6 +20,21 @@ test = { # maybe name it in full
     'edge_orientation': [0] * 12
 }
 
+U = { # maybe name it in full
+    'corner_permutation': [4, 1, 2, 7, 3, 5, 6, 0],
+    'edge_permutation': [8, 1, 2, 11, 4, 5, 6, 7, 3, 9, 10, 0],
+    'corner_orientation': [1, 0, 0, 1, 2, 0, 0, 2],
+    'edge_orientation': [1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1]
+}
+
+
+qwerty = {  # 'U','R2','U','R','U','B2','R','B\'','R','U','L','D','L','D2'
+    'corner_permutation': [4, 6, 0, 7, 5, 2, 1, 3],
+    'edge_permutation': [1, 9, 7, 0, 8, 3, 4, 11, 6, 10, 5, 2],
+    'corner_orientation': [1, 2, 2, 0, 0, 2, 1, 1],
+    'edge_orientation': [1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1]
+}
+
 RUru = { # maybe name it in full
     'corner_permutation': [7, 1, 2, 6, 4, 5, 3, 0],
     'edge_permutation': [0, 1, 2, 6, 4, 5, 11, 7, 8, 9, 10, 3],
@@ -26,25 +42,97 @@ RUru = { # maybe name it in full
     'edge_orientation': [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1]
 }
 
-
+# g0 = {'L', 'R', 'F', 'B', 'U', 'D'}
+# g0 = ['L', 'R', 'F', 'B', 'U', 'D'] # anke more notations
+g0 = ['L', 'R', 'F', 'B', 'U', 'D', 'L\'', 'R\'', 'F\'', 'B\'', 'U\'', 'D\''] # anke more notations
 
 stages = ['stage_1', 'stage_2']
-shuf = State(test)
-shuf.moves('U')
 
 # solver:
 # if last turn was in the same coordinate axis ?
 # if last was repeated with this turn -> continue
 # print(st)
-
+shuf = State(qwerty)
 start_time = timeit.default_timer()
-properties_shuffled_state = shuf.properties
-
-root_state = State(properties_shuffled_state)  # begin state
+properties_shuffled_state = shuf.eo
 solution_state = None
-if root_state.is_goal_stage(stages[0]) is True:
+# print(work)
+open_list = PriorityQueue()  # rename
 
-    # need to break here
+
+if shuf.is_goal_stage(stages[0]) is True:
+    exit()  # need to break here
+
+
+open_list.put(shuf)
+
+# print('size', open_list.qsize())
+print()
+
+# just = []
+# just.append(work)
+# for i in g0:
+#     just.append(State(work.properties, i))
+#
+# print('len of list', len(just))
+# for i in just:
+#     print(i.properties['edge_orientation'])
+#     print(i.cost('stage_1'))
+# exit()
+
+ii = 0
+o = 0
+count = 0
+while not open_list.empty():
+    lowest_cost_node = open_list.get()
+    # print('id', lowest_cost_node.id)
+    print('cst', lowest_cost_node.cost())
+    # print('eo', lowest_cost_node.eo)
+    # print()
+    if lowest_cost_node.is_goal_stage('stage_1'):
+        print(gre('BiNGO!'))
+        print('fin cost', lowest_cost_node.cost())
+        print('fin eo', lowest_cost_node.eo)
+        exit()
+
+
+    # print('cost() =', lowest_cost_node.cost())
+    # if lowest_cost_node.is_goal_stage('stage_1'):
+    #     print(123)
+    #     print(lowest_cost_node.properties)
+    #     break
+
+    for i in g0:
+        # print(i)
+        new_state = State(lowest_cost_node.properties, i)
+        # print(new_state.notation)
+        # print(new_state.eo)
+        # print('cost', new_state.cost())
+        open_list.put(new_state)
+
+        # new_state.id = o
+        # o += 1
+        # print('id', new_state.id)
+        # print(new_state.cost())
+    # exit()
+    if ii > 00:
+        brea "make another que" k
+    ii += 1
+    print('SIZE', open_list.qsize())
+
+    # c = lowest_cost_node.weight_stage_cepo('stage_1')
+    # print('cost', c)
+    # print(lowest_cost_node)
+    # print(lowest_cost_node.id)
+    count += 1
+
+# print(count)
+# del open_list
+exit()
+print('SIZE', open_list.qsize())
+while not open_list.empty():
+    node = open_list.get()
+    print(node.cost())
 
 """
 def __get_solution_node(self) -> Optional[Node | None]:

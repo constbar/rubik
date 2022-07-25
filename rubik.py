@@ -1,4 +1,6 @@
 from __future__ import annotations
+from queue import PriorityQueue
+# state0 сделать как шафл
 
 import copy
 from termcolor import colored
@@ -20,6 +22,7 @@ class State:  # rename like rubik state
     goal_corner_permutation = '0' * 8
     goal_edge_orientation = '0' * 12
     goal_corner_orientation = '0' * 8
+    id = 0
 
     def __init__(self, properties, notation=None, notation_history=None):  # here add glubina poiska
         self.properties = copy.deepcopy(properties)
@@ -30,6 +33,12 @@ class State:  # rename like rubik state
 
         self.notation = notation
         self.notation_history = notation_history
+        self.id = None
+
+        if self.notation:
+            self.moves(self.notation)
+            # if self.notation_history is list:
+            #     self.notation_history.append(self.notation)
 
         # print(id(self.total_state))
         # print(id(total_state))
@@ -39,7 +48,7 @@ class State:  # rename like rubik state
         # self.corner_permutations =
         search_depth = 0
 
-    def moves(self, move):
+    def moves(self, move):  # maybe rename it
         """ the notation with the number 2 makes a double clockwise rotation.
         apostrophe notation makes a counter-clockwise rotation. """
         def u_clockwise():
@@ -135,27 +144,30 @@ class State:  # rename like rubik state
             case 'B\'': [b_clockwise() for _ in range(3)]
             case _: raise Exception  # make another except
 
-    def calculate_stage_cepo(self):  # input list
+    # maybe property  # reaname it
+    # def weight_stage_cepo(self, stage):  # input list
+    def cost(self, stage='stage_1'):  # input list
+        if stage == 'stage_1':
+            return 12 - self.eo.count(0)
         # rashiftovke of corner pern edge orientations
         # count number of not zeros?
-        pass
 
     def is_goal_stage(self, stage):
+        """make 12 not hardcoded"""
         if stage == 'stage_1':
-
-
+            return self.cost('stage_1') == 0
 
     def __lt__(self, other: State) -> bool:
-        pass
+        st = 'stage_1'
+        return self.cost(st) < other.cost(st)
         # return self.__calc_c_cost() < other.__calc_c_cost()
 
     def __str__(self):
         # can make it more beauty with numpy
-        print(gre(f"corner_permutation\n{self.properties['corner_permutation']}"))
-        print(gre(f"corner_orientation\n{self.properties['corner_orientation']}"))
-        print()
-        print(yll(f"edge_permutation\n{self.properties['edge_permutation']}"))
-        print(yll(f"edge_orientation\n{self.properties['edge_orientation']}"))
+        print(gre(f"corner_permutation: {self.properties['corner_permutation']}"))
+        print(gre(f"corner_orientation: {self.properties['corner_orientation']}"))
+        print(yll(f"edge_permutation: {self.properties['edge_permutation']}"))
+        print(yll(f"edge_orientation: {self.properties['edge_orientation']}"))
         return ''
 
     @staticmethod
