@@ -43,8 +43,8 @@ RUru = { # maybe name it in full
 }
 
 # g0 = {'L', 'R', 'F', 'B', 'U', 'D'}
-# g0 = ['L', 'R', 'F', 'B', 'U', 'D'] # anke more notations
-g0 = ['L', 'R', 'F', 'B', 'U', 'D', 'L\'', 'R\'', 'F\'', 'B\'', 'U\'', 'D\''] # anke more notations
+g0 = ['L', 'R', 'F', 'B', 'U', 'D']  # anke more notations
+# g0 = ['L', 'R', 'F', 'B', 'U', 'D', 'L\'', 'R\'', 'F\'', 'B\'', 'U\'', 'D\''] # anke more notations
 
 stages = ['stage_1', 'stage_2']
 
@@ -52,13 +52,12 @@ stages = ['stage_1', 'stage_2']
 # if last turn was in the same coordinate axis ?
 # if last was repeated with this turn -> continue
 # print(st)
-shuf = State(qwerty)
+shuf = State(qwerty, None, None)
 start_time = timeit.default_timer()
 properties_shuffled_state = shuf.eo
 solution_state = None
 # print(work)
 open_list = PriorityQueue()  # rename
-
 
 if shuf.is_goal_stage(stages[0]) is True:
     exit()  # need to break here
@@ -66,7 +65,6 @@ if shuf.is_goal_stage(stages[0]) is True:
 
 open_list.put(shuf)
 
-# print('size', open_list.qsize())
 print()
 
 # just = []
@@ -85,7 +83,6 @@ o = 0
 count = 0
 while not open_list.empty():
     lowest_cost_node = open_list.get()
-    # print('id', lowest_cost_node.id)
     print('cst', lowest_cost_node.cost())
     # print('eo', lowest_cost_node.eo)
     # print()
@@ -95,17 +92,20 @@ while not open_list.empty():
         print('fin eo', lowest_cost_node.eo)
         exit()
 
-
     # print('cost() =', lowest_cost_node.cost())
     # if lowest_cost_node.is_goal_stage('stage_1'):
     #     print(123)
     #     print(lowest_cost_node.properties)
     #     break
 
-    for i in g0:
-        # print(i)
-        new_state = State(lowest_cost_node.properties, i)
-        # print(new_state.notation)
+    for nota in g0:
+        get_history = copy.deepcopy(lowest_cost_node.notation_history)
+        print(get_history)
+        print(nota)
+        print(id(get_history))
+        new_state = State(lowest_cost_node.properties, nota, get_history)
+        print('history', new_state.notation_history)
+        # print(new_state.notation_history)
         # print(new_state.eo)
         # print('cost', new_state.cost())
         open_list.put(new_state)
@@ -114,17 +114,12 @@ while not open_list.empty():
         # o += 1
         # print('id', new_state.id)
         # print(new_state.cost())
-    # exit()
-    if ii > 00:
-        brea "make another que" k
-    ii += 1
-    print('SIZE', open_list.qsize())
 
-    # c = lowest_cost_node.weight_stage_cepo('stage_1')
-    # print('cost', c)
-    # print(lowest_cost_node)
-    # print(lowest_cost_node.id)
-    count += 1
+    if ii > 100:
+        break
+    ii += 1
+    # exit()
+    print('SIZE', open_list.qsize())
 
 # print(count)
 # del open_list

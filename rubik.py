@@ -23,8 +23,8 @@ class State:  # rename like rubik state
     goal_edge_orientation = '0' * 12
     goal_corner_orientation = '0' * 8
     id = 0
-
-    def __init__(self, properties, notation=None, notation_history=None):  # here add glubina poiska
+    # delete None as default value
+    def __init__(self, properties, notation, notation_history):  # here add glubina poiska
         self.properties = copy.deepcopy(properties)
         self.cp = self.properties['corner_permutation']
         self.ep = self.properties['edge_permutation']
@@ -35,10 +35,17 @@ class State:  # rename like rubik state
         self.notation_history = notation_history
         self.id = None
 
+        # self.notation_history = self.notation_history  # list or none
+        if notation_history is not None:
+            self.notation_history = notation_history
+        else:
+            self.notation_history = list()
+
         if self.notation:
             self.moves(self.notation)
-            # if self.notation_history is list:
-            #     self.notation_history.append(self.notation)
+            self.notation_history.append(self.notation)
+            # if self.notation_history:
+                # self.notation_history.append(self.notation)
 
         # print(id(self.total_state))
         # print(id(total_state))
@@ -159,7 +166,8 @@ class State:  # rename like rubik state
 
     def __lt__(self, other: State) -> bool:
         st = 'stage_1'
-        return self.cost(st) < other.cost(st)
+        # return self.cost(st) < other.cost(st) and len(self.notation_history) < len(other.notation_history)
+        return len(self.notation_history) < len(other.notation_history) and self.cost(st) < other.cost(st)
         # return self.__calc_c_cost() < other.__calc_c_cost()
 
     def __str__(self):
