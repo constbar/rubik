@@ -11,10 +11,10 @@ import operator
 gre = lambda i: colored(i, 'green')
 yll = lambda i: colored(i, 'yellow')
 
+
 class Solver:
     def __init__(self, init_state):
         self.init__state = init_state
-
 
 
 class State:  # rename like rubik state
@@ -24,6 +24,7 @@ class State:  # rename like rubik state
     goal_corner_orientation = '0' * 8
     id = 0
     # delete None as default value
+
     def __init__(self, properties, notation, notation_history):  # here add glubina poiska
         self.properties = copy.deepcopy(properties)
         self.cp = self.properties['corner_permutation']
@@ -151,24 +152,36 @@ class State:  # rename like rubik state
             case 'B\'': [b_clockwise() for _ in range(3)]
             case _: raise Exception  # make another except
 
-    # maybe property  # reaname it
-    # def weight_stage_cepo(self, stage):  # input list
-    def cost(self, stage='stage_1'):  # input list
-        if stage == 'stage_1':
-            return 12 - self.eo.count(0)
+    def h_cost(self, stage='stage_0'):  # input list
+        # maybe property  # reaname it # or get h cost
+        # def weight_stage_cepo(self, stage):  # input list
         # rashiftovke of corner pern edge orientations
         # count number of not zeros?
+        if stage == 'stage_0':
+            return 12 - self.eo.count(0)  # example 12 - 9 zeros = 3
+        elif stage == 'stage_1':
+            # плюс последние 8 9 9 10 11 для боковух
+            return 20 - self.eo.count(0) - self.co.count(0) # edges and corners orientations
+
+
+    def f_cost(self):
+        """ len of history shows g(n). distance in steps from the initial node """
+        return len(self.notation_history) + self.h_cost()
+        pass
 
     def is_goal_stage(self, stage):
         """make 12 not hardcoded"""
-        if stage == 'stage_1':
-            return self.cost('stage_1') == 0
+        # print(gre(self.cost('stage_0')))
 
-    def __lt__(self, other: State) -> bool:
-        st = 'stage_1'
-        # return self.cost(st) < other.cost(st) and len(self.notation_history) < len(other.notation_history)
-        return len(self.notation_history) < len(other.notation_history) and self.cost(st) < other.cost(st)
-        # return self.__calc_c_cost() < other.__calc_c_cost()
+        if stage == 'stage_0':
+            return self.h_cost('stage_0') == 0
+        elif stage == 'stage_1':
+            return
+
+    def __lt__(self, other: State) -> bool: # add here whitch state is compre
+        return self.f_cost() < other.f_cost()
+        # st = 'stage_0'
+        # return self.h_cost(st) + len(self.notation_history) < other.h_cost(st) + len(other.notation_history)
 
     def __str__(self):
         # can make it more beauty with numpy
@@ -179,8 +192,8 @@ class State:  # rename like rubik state
         return ''
 
     @staticmethod
-    def calculate_new_co(orientation):
-        return 2 if orientation == -1 else orientation % 3
+    def calculate_new_co(corner_orientation):
+        return 2 if corner_orientation == -1 else corner_orientation % 3
 
 
 # in solver make perebor hodov po osyam

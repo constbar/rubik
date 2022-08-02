@@ -21,3 +21,7 @@ bonus
 time (beyond a few seconds is not considered reasonable).
 * A choice between several algorithms, or a selection of the best solution between
 several algorithms
+
+
+In general, the Thistlethwaite’s algorithms divides the problem into four
+independent subproblems by using the following four nested groups Gi:
