@@ -2,7 +2,9 @@ from __future__ import annotations
 from queue import PriorityQueue
 # state0 сделать как шафл
 # can @property be with __
+# if only one 1 will be type of moovig (cepo or faces) -> make cepo with 1 self withoub self.ce self.po etc.. or maybe 2
 
+import numpy as np
 import copy
 from termcolor import colored
 from itertools import repeat
@@ -12,7 +14,10 @@ import pandas as pd
 
 gre = lambda i: colored(i, 'green')
 yll = lambda i: colored(i, 'yellow')
-
+clockwise = (1, 0) # make upper
+counterclockwise = (0, 1)
+s_c = 3
+num_faces = 6
 
 class State:  # rename like rubik state or cube state
     goal_edge_permutation = [0] * 12  # better list i belive
@@ -22,19 +27,24 @@ class State:  # rename like rubik state or cube state
     id = 0
     # delete None as default value
 
-    def __init__(self, properties, stage, notation, notation_history):  # here add glubina poiska # nado li dobavit' None avtomatom?? # rename moves history
+    def __init__(self, properties, faces, stage, notation, notation_history):  # here add glubina poiska # nado li dobavit' None avtomatom?? # rename moves history
         self.properties = copy.deepcopy(properties)
         self.cp = self.properties['corner_permutation']
         self.ep = self.properties['edge_permutation']
         self.co = self.properties['corner_orientation']
         self.eo = self.properties['edge_orientation']
 
+        self.faces = faces
+
+        self.top, self.left, self.front, \
+            self.right, self.back, self.bottom = \
+            [np.array(list(faces[s_c ** 2 * i:s_c ** 2 * (i + 1)]))
+             .reshape(s_c, s_c) for i in range(num_faces)]
+
         self.notation = notation  # if not none
         self.notation_history = notation_history # if not none
-        self.id = None  # del # make it in right order
         self.stage = 'stage_0' if stage is None else stage
 
-        # self.notation_history = self.notation_history  # list or none
         self.notation_history = list() if notation_history is None else notation_history
 
         if self.notation:
@@ -62,6 +72,12 @@ class State:  # rename like rubik state or cube state
 
             self.ep[4], self.ep[0], self.ep[5], self.ep[1] = \
                 self.ep[1], self.ep[4], self.ep[0], self.ep[5]
+            ###
+            self.faces['left'] = np.rot90(self.faces['left'], axes=clockwise)
+            self.faces['front'][:, [0]], self.faces['top'][:, [0]], \
+                self.faces['back'][:, [2]], self.faces['bottom'][:, [0]] \
+                = self.faces['top'][:, [0]], self.faces['back'][:, [2]][::-1], \
+                self.faces['bottom'][:, [0]][::-1], self.faces['front'][:, [0]]
 
         def r_clockwise():
             self.cp[3], self.cp[7], self.cp[2], self.cp[6] = \
@@ -69,6 +85,12 @@ class State:  # rename like rubik state or cube state
 
             self.ep[6], self.ep[3], self.ep[7], self.ep[2] = \
                 self.ep[2], self.ep[6], self.ep[3], self.ep[7]
+            ###
+            self.faces['right'] = np.rot90(self.faces['right'], axes=clockwise)
+            self.faces['front'][:, [2]], self.faces['top'][:, [2]], \
+                self.faces['back'][:, [0]], self.faces['bottom'][:, [2]] \
+                = self.faces['bottom'][:, [2]], self.faces['front'][:, [2]], \
+                self.faces['top'][:, [2]][::-1], self.faces['back'][:, [0]][::-1]
 
         def f_clockwise():
             self.cp[4], self.cp[3], self.cp[6], self.cp[1] = \
@@ -81,6 +103,14 @@ class State:  # rename like rubik state or cube state
             self.co[self.cp[3]] = State.calculate_new_co(self.co[self.cp[3]] + 1)
             self.co[self.cp[4]] = State.calculate_new_co(self.co[self.cp[4]] - 1)
             self.co[self.cp[6]] = State.calculate_new_co(self.co[self.cp[6]] - 1)
+            ###
+            self.faces['front'] = np.rot90(self.faces['front'], axes=clockwise)
+            self.faces['top'][[2]], self.faces['right'][:, [0]], \
+                self.faces['bottom'][[0]], self.faces['left'][:, [2]] \
+                = np.rot90(self.faces['left'][:, [2]][::-1]), \
+                np.rot90(self.faces['top'][[2]])[::-1], \
+                np.rot90(self.faces['right'][:, [0]][::-1]), \
+                np.rot90(self.faces['bottom'][[0]])[::-1]
 
         def b_clockwise():
             self.cp[7], self.cp[0], self.cp[5], self.cp[2] = \
@@ -93,6 +123,14 @@ class State:  # rename like rubik state or cube state
             self.co[self.cp[2]] = State.calculate_new_co(self.co[self.cp[2]] + 1)
             self.co[self.cp[5]] = State.calculate_new_co(self.co[self.cp[5]] - 1)
             self.co[self.cp[7]] = State.calculate_new_co(self.co[self.cp[7]] - 1)
+            ###
+            self.faces['back'] = np.rot90(self.faces['back'], axes=clockwise)
+            self.faces['top'][[0]], self.faces['right'][:, [2]], \
+                self.faces['bottom'][[2]], self.faces['left'][:, [0]] \
+                = np.rot90(self.faces['right'][:, [2]]), \
+                np.rot90(self.faces['bottom'][[2]]), \
+                np.rot90(self.faces['left'][:, [0]]), \
+                np.rot90(self.faces['top'][[0]])
 
         def u_clockwise():
             self.cp[0], self.cp[7], self.cp[3], self.cp[4] = \
@@ -110,6 +148,12 @@ class State:  # rename like rubik state or cube state
             self.eo[self.ep[3]] = (self.eo[self.ep[3]] + 1) % 2
             self.eo[self.ep[8]] = (self.eo[self.ep[8]] + 1) % 2
             self.eo[self.ep[11]] = (self.eo[self.ep[11]] + 1) % 2
+            ###
+            self.faces['top'] = np.rot90(self.faces['top'], axes=clockwise)
+            self.faces['front'][[0]], self.faces['right'][[0]], \
+                self.faces['back'][[0]], self.faces['left'][[0]] \
+                = self.faces['right'][[0]], self.faces['back'][[0]], \
+                self.faces['left'][[0]], self.faces['front'][[0]]
 
         def d_clockwise():
             self.cp[1], self.cp[6], self.cp[2], self.cp[5] = \
@@ -127,6 +171,12 @@ class State:  # rename like rubik state or cube state
             self.eo[self.ep[2]] = (self.eo[self.ep[2]] + 1) % 2
             self.eo[self.ep[9]] = (self.eo[self.ep[9]] + 1) % 2
             self.eo[self.ep[10]] = (self.eo[self.ep[10]] + 1) % 2
+            ###
+            self.faces['bottom'] = np.rot90(self.faces['bottom'], axes=clockwise)
+            self.faces['front'][[2]], self.faces['right'][[2]], \
+                self.faces['back'][[2]], self.faces['left'][[2]] \
+                = self.faces['left'][[2]], self.faces['front'][[2]], \
+                self.faces['right'][[2]], self.faces['back'][[2]]
 
         match move:
             case 'L': l_clockwise()

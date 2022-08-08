@@ -25,3 +25,15 @@ several algorithms
 
 In general, the Thistlethwaite’s algorithms divides the problem into four
 independent subproblems by using the following four nested groups Gi:
+
+# another way to init
+# this init can be thu iteration [r, b, y, g ...etc]
+# {}, * 9 [:-1].format(w) -> [w w w w w w w ww w].reshape 3 x 3
+
+# for init by numbers
+# 'top': np.arange(cb_sz ** 2 * 0, cb_sz ** 2 * 1).reshape(cb_sz, cb_sz),
+# 'left': np.arange(cb_sz ** 2 * 1, cb_sz ** 2 * 2).reshape(cb_sz, cb_sz),
+# 'front': np.arange(cb_sz ** 2 * 2, cb_sz ** 2 * 3).reshape(cb_sz, cb_sz),
+# 'right': np.arange(cb_sz ** 2 * 3, cb_sz ** 2 * 4).reshape(cb_sz, cb_sz),
+# 'back': np.arange(cb_sz ** 2 * 4, cb_sz ** 2 * 5).reshape(cb_sz, cb_sz),
+# 'bottom': np.arange(cb_sz ** 2 * 5, cb_sz ** 2 * 6).reshape(cb_sz, cb_sz),
