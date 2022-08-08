@@ -1,6 +1,6 @@
 # if shuffled state starts - dont write the turns to somewhere
 # solver:
-
+import numpy as np
 # if last turn was in the same coordinate axis ?
 # if last was repeated with this turn -> continue
 # print(st)
@@ -136,7 +136,7 @@ kek = State(tests.clear_state['cepo'],
             + 'r' * 9 + 'b' * 9 + 'y' * 9,
             None, None, None)
 
-print(kek.top)
+print(kek)
 
 # shuf = State(qwerty, None, None, None)
 # shuf = State(RUru, None, None, None)
