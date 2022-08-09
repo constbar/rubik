@@ -37,3 +37,10 @@ independent subproblems by using the following four nested groups Gi:
 # 'right': np.arange(cb_sz ** 2 * 3, cb_sz ** 2 * 4).reshape(cb_sz, cb_sz),
 # 'back': np.arange(cb_sz ** 2 * 4, cb_sz ** 2 * 5).reshape(cb_sz, cb_sz),
 # 'bottom': np.arange(cb_sz ** 2 * 5, cb_sz ** 2 * 6).reshape(cb_sz, cb_sz),
+
+
+self.faces = {   # target faces
+            'top': np.full((3, 3), 'w', dtype=str), 'left': np.full((3, 3), 'o', dtype=str),
+            'front': np.full((3, 3), 'g', dtype=str), 'right': np.full((3, 3), 'r', dtype=str),
+            'back': np.full((3, 3), 'b', dtype=str), 'bottom': np.full((3, 3), 'y', dtype=str)
+        }

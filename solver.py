@@ -131,17 +131,18 @@ class Solver:
         print('NUM ITERS IS', ii)
 
 
-kek = State(tests.clear_state['cepo'],
-            'w' * 9 + 'o' * 9 + 'g' * 9
-            + 'r' * 9 + 'b' * 9 + 'y' * 9,
-            None, None, None)
+test = tests.clear_state
+kek = State(
+    test['cepo'],
+    test['faces'],
+    None, None, None)
+
+make 7 random states of cube thru generator
+get exampls from check list
+maybe make list of notations for applying all moves
 
 print(kek)
 
-# shuf = State(qwerty, None, None, None)
-# shuf = State(RUru, None, None, None)
-# shuf = State(test, None, None)
-# print(shuf.h_cost())
 
 # solv = Solver(shuf)
 # solv = Solver(kek)

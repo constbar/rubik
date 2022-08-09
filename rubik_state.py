@@ -198,7 +198,6 @@ class State:  # rename like rubik state or cube state
             case 'D': d_clockwise()
             case 'D2': [d_clockwise() for _ in range(2)]
             case 'D\'': [d_clockwise() for _ in range(3)]
-            case _: raise Exception  # make another except # delete it
 
     def h_cost(self):  # input list
         # maybe property  # reaname it # or get h cost
@@ -305,46 +304,34 @@ class State:  # rename like rubik state or cube state
         # return self.h_cost(st) + len(self.notation_history) < other.h_cost(st) + len(other.notation_history)
 
     def __str__(self):
-        def sum_lines_np(matrices):
+        def sum_lines_np(*matrices):  # make line face in 1 line
+            # for showing faces in color
+            final_str = ''
             nums = len(matrices)
             for i in range(s_c):
-                for line in matrices[i]:
-                    FIX IT
-                    print(line)
-                    # pass
-            final_str = ''
-            # print(args[1])
-            # print(type(args))
-            # print(args)
+                for num in range(nums):
+                    final_str += matrices[num][i].__str__()
+                    final_str += '  ' if num < nums - 1 else ''
+                final_str += '\n' if i < nums else ''
+            final_str = final_str.replace('][', ' ')
+            final_str = re.sub(r'[\[\]\']', '', final_str)
+            return final_str
 
         empty_np = np.full((3, 3), ' ')
-        # for i in range(s_c):
-        #     print(num_line)
-            # line = empty_np[i].__str__() + self.top[i].__str__()
-            # line = line.replace('][', ' ')
-            # line = re.sub(r'[\[\]\']', '', line)
-            # print(line)
-        sum_lines_np([empty_np, self.top])
-        # print(empty_np)
-        # print()
-        # print(empty_np.__str__() + self.top.__str__())
+        scheme = sum_lines_np(self.left, self.front, self.right, self.back)
+        scheme = sum_lines_np(empty_np, self.top) + '\n' + \
+            scheme + sum_lines_np(empty_np, self.bottom)
 
-        # df =
-        # arr = np.full((3, 3), 'o', dtype=str)
-        # ts = arr.__str__()
-        # df1 = pd.DataFrame(size=(1,8))
-        # print(self.top)
-        # print(np.full((3, 3), ' '), self.top, sep='')
-        # print(np.full((3, 3), ' ') + self.top.tolist())
-        # print(self.top.tolist())
-        # print(self.top[0].__str__())
+        make_one_line = lambda matrix: str(matrix.tolist())
+        single_array = map(make_one_line, [
+            self.top, self.left, self.front, self.right, self.back, self.bottom])
+        single_array = ''.join(re.findall(r'[a-z]', str(list(single_array))))
 
         str_dict = {k: ' '.join(map(str, v)) for k, v in self.properties.items()}
         data = {'permutation': [str_dict['corner_permutation'], str_dict['edge_permutation']],
                 'orientation': [str_dict['corner_orientation'], str_dict['edge_orientation']]}
         df = pd.DataFrame.from_dict(data, orient='index').rename(columns={0: 'corner', 1: 'edge'})
-        return df.to_string()
-        # return df.to_string() + '\n\n' + df.to_string()
+        return scheme + '\n\n' + single_array + '\n\n' + df.to_string()
 
     @staticmethod
     def calculate_new_co(corner_orientation):
