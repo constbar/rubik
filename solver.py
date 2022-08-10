@@ -1,4 +1,6 @@
+# maybe make list of notations for applying all moves
 # if shuffled state starts - dont write the turns to somewhere
+# make in moves \' in back
 # solver:
 import numpy as np
 # if last turn was in the same coordinate axis ?
@@ -28,17 +30,7 @@ log = lambda i: logging.info(i)
 gre = lambda i: colored(i, 'green')
 yll = lambda i: colored(i, 'yellow')
 
-
-
-stages = ['stage_0']#, 'stage_1']#, 'stage_2']  # rename to stage 0
-
-# g0 = {'R', 'B', 'D'}
-# g0 = {'R', 'B', 'D', 'U', 'L'}
-# g0 = {'L', 'R', 'F', 'B', 'U', 'D'}
-# g0 = ['L', 'R', 'F', 'B', 'U', 'D']  # anke more notations
-# g0 = ['L', 'R', 'F', 'B', 'U', 'D']  # anke more notations
-# g0 = ['L', 'R', 'F', 'B', 'U', 'D', 'L\'', 'R\'', 'F\'', 'B\'', 'U\'', 'D\'']  # anke more notations
-# g0 =["U", "U'", "U2", "D", "D'", "D2", "R", "R'", "R2", "L", "L'", "L2", "F", "F'", "F2", "B", "B'", "B2"]
+stages = ['stage_0'] #, 'stage_1']#, 'stage_2']  # rename to stage 0
 
 config_dict = {
     '3x3x3': {
@@ -46,7 +38,7 @@ config_dict = {
         # 'subgroup_0_moves': ['U', 'D', 'L', 'R', 'F', 'B'],
         # 'subgroup_0_moves': ['L', 'R', 'F', 'B', 'U', 'D'],
         # 'stage_0_moves': ['L', 'R', 'F', 'B', 'U', 'D'],
-        'stage_0_moves': ["U", "U'", "U2", "D", "D'", "D2", "R", "R'", "R2", "L", "L'", "L2", "F", "F'", "F2", "B", "B'", "B2"],
+        'stage_0_moves': ["L", "L'", "L2", "R", "R'", "R2", "F", "F'", "F2", "B", "B'", "B2", "U", "U'", "U2", "D", "D'", "D2"],
         'stage_1_moves': ['L', 'R', 'F', 'B', 'U2', 'D2'],
         'stage_2_moves': ['L', 'R', 'F', 'B', 'U2', 'D2'],
     }
@@ -55,7 +47,7 @@ config_dict = {
 class Solver:
     def __init__(self, shuffled_node):  # it is the biging state
         self.start_node = shuffled_node  # this node will be over init for each stage
-        self.open_list = PriorityQueue()
+        self.open_list = PriorityQueue()  # add it in first step
         self.solution_path = list()
 
         # for stage in ['stage_0', 'stage_1', 'stage_2', 'stage_3']:
@@ -88,6 +80,9 @@ class Solver:
 
                 if lowest_node.is_goal_stage():
                     print(gre('BiNGO! the answer is here'))
+                    print(lowest_node.ep)
+                    print(lowest_node.eo)
+
                     print(gre(lowest_node))
                     print(gre(lowest_node.notation))
                     print(gre(lowest_node.notation_history))
@@ -97,17 +92,20 @@ class Solver:
                     self.solution_path += lowest_node.notation_history
                     solved = True
                     # print('id of lowest', id(lowest_node))
-                    self.start_node = State(
+                    """
+                    self.start_node = State( no need yet for next level
                         # copy.deepcopy(lowest_node.properties), f'stage_{stage + 1}', None, None
                         lowest_node.properties, f'stage_{stage + 1}', None, None
                     )
+                    """
                     break
 
                 # for notation in g0:
                 for notation in config_dict['3x3x3'][f'stage_{stage}_moves']:
                     # print(stage)
                     # print(config_dict['3x3x3'][f'{stage}_moves'])
-                    new_state = State(lowest_node.properties, stages[stage], notation,  # rename move history
+                    new_state = State(lowest_node.properties, lowest_node.make_line_state(),
+                                stages[stage], notation,  # rename move history
                                       copy.deepcopy(lowest_node.notation_history))
                     # print(f'node cost {new_state.f_cost()}, '
                     #       f'{new_state.notation}, {new_state.notation_history}')
@@ -131,19 +129,17 @@ class Solver:
         print('NUM ITERS IS', ii)
 
 
-test = tests.clear_state
-kek = State(
-    test['cepo'],
-    test['faces'],
-    None, None, None)
-
-make 7 random states of cube thru generator
-get exampls from check list
-maybe make list of notations for applying all moves
-
-print(kek)
+# test = tests.clear_state
+test = tests.test9
+kek = State(test['cepo'], test['faces'], None, None, None)
+# print(kek.make_line_state())
 
 
-# solv = Solver(shuf)
-# solv = Solver(kek)
+solv = Solver(kek)
 # print('kek.faces')
+
+
+# mv = "U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2"
+# for m in mv.split():
+#     kek.moves(m)
+# print(kek)

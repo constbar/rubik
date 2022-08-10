@@ -21,13 +21,12 @@ s_c = 3
 num_faces = 6
 
 class State:  # rename like rubik state or cube state
-    goal_edge_permutation = [0] * 12  # better list i belive
-    goal_corner_permutation = '0' * 8
-    goal_edge_orientation = '0' * 12
-    goal_corner_orientation = '0' * 8
-    id = 0
+    # goal_edge_permutation = [0] * 12  # better list i belive
+    # goal_corner_permutation = '0' * 8
+    # goal_edge_orientation = '0' * 12
+    # goal_corner_orientation = '0' * 8
     # delete None as default value
-
+    # reorder input vals
     def __init__(self, properties, faces, stage, notation, notation_history):  # here add glubina poiska # nado li dobavit' None avtomatom?? # rename moves history
         self.properties = copy.deepcopy(properties)
         self.cp = self.properties['corner_permutation']
@@ -36,7 +35,6 @@ class State:  # rename like rubik state or cube state
         self.eo = self.properties['edge_orientation']
 
         self.faces = faces
-
         self.top, self.left, self.front, \
             self.right, self.back, self.bottom = \
             [np.array(list(faces[s_c ** 2 * i:s_c ** 2 * (i + 1)]))
@@ -53,14 +51,7 @@ class State:  # rename like rubik state or cube state
             self.notation_history.append(self.notation)
             # if self.notation_history:
                 # self.notation_history.append(self.notation)
-
-        # print(id(self.total_state))
-        # print(id(total_state))
-        # moves need to init
-        # if moves.split() > 1 -> couple moves -> apply it to them
-        # pass here dictionary i belive is better
-        # self.corner_permutations =
-        search_depth = 0
+        # self.faces =
 
     def moves(self, move):  # maybe rename it
         """ !!!!!!!!!!! add description
@@ -216,13 +207,13 @@ class State:  # rename like rubik state or cube state
         #     return 16 - self.co.count(0) - kek
             # return 8 - self.сo.count(0)
 
-        heur = 0
+        lr_slice_heuristic = 0
         if self.stage == 'stage_0':
             for i in [0, 3, 8, 11]:
                 if self.ep[i] == i:
-                    heur += 1
+                    lr_slice_heuristic += 1
                 if self.eo[i] == 0:
-                    heur += 1
+                    lr_slice_heuristic += 1
             # for i in [0, 3, 8, 11]:
             #     if self.eo[i] == 0:
             #         heur += 1
@@ -231,58 +222,7 @@ class State:  # rename like rubik state or cube state
             #     if self.cp[i] == i:
             #         heur += 1
 
-            return 8 - heur
-
-
-        if self.stage == 'stage_01':
-            return 12 - self.eo.count(0)  # example 12 - 9 zeros = 3
-        elif self.stage == 'stage_12':
-            # lr slise means layer btw L and R sides. e8 9 10 11 edges by indexing
-            # плюс последние 8 9 10 11 для боковух
-            lr_slice_heuristic = 0
-            # print('!!!edge_perm', self.ep[-4:]) # lr_edges
-            for edge_permutation in self.ep[-4:]:
-                if edge_permutation in [8, 9, 10, 11]:
-                    lr_slice_heuristic += 2
-            return 16 - self.co.count(0) - lr_slice_heuristic
-            # if sorted(self.ep[-4:]) == [8, 9, 10, 11]:
-            #     return 0  # edges and corners orientations
-            # return 1
-        elif self.stage == 'stage_11':
-            # print('stage 2 is here')
-            lr_slice_heuristic = 0
-            # print('!!!edge_perm', self.ep[-4:]) # lr_edges
-            for edge_permutation in self.ep[-4:]:
-                if edge_permutation in [8, 9, 10, 11]:
-                    lr_slice_heuristic += 1
-            # if sorted(self.ep[-4:]) == [8, 9, 10, 11]:
-            #     lr_slice_heuristic = 1
-                  # edges and corners orientations
-            # lr_slice_heuristic = lr_slice_heuristic // 4
-            # print(lr_slice_heuristic)
-            # return 9 - self.co.count(0) - lr_slice_heuristic
-            # return 1 - lr_slice_heuristic  # edges and corners orientations
-            return 12 - self.co.count(0) - lr_slice_heuristic
-            # return 9 - self.co.count(0) - lr_slice_heuristic
-            # return 8 - self.co.count(0)
-
-        """
-        print('lr_slice_heuristic', lr_slice_heuristic)
-        print('self.ep[-4:]:', self.ep[-4:])
-        print("HH", 12 - self.co.count(0) - lr_slice_heuristic)
-        print(self.notation)
-        print(self)
-        print(self.properties)
-        print(self.notation_history)
-        print()
-        """
-            # print('lr_slice_heuristic', lr_slice_heuristic)
-            # print('HEUR', 24 - self.eo.count(0) - self.co.count(0) - lr_slice_heuristic)
-            # print(self)
-            # return 24 - self.eo.count(0) - self.co.count(0) - lr_slice_heuristic  # edges and corners orientations
-            # return 12 - self.co.count(0) - lr_slice_heuristic  # edges and corners orientations
-            # return 8 - self.co.count(0)  # edges and corners orientations
-            # return 20 - self.eo.count(0) - self.co.count(0)
+            return 8 - lr_slice_heuristic
 
     def f_cost(self):
         """ len of history shows g(n). distance in steps from the initial node """
@@ -303,6 +243,13 @@ class State:  # rename like rubik state or cube state
         # st = 'stage_0'
         # return self.h_cost(st) + len(self.notation_history) < other.h_cost(st) + len(other.notation_history)
 
+    def make_line_state(self):  # maybe
+        make_one_line = lambda matrix: str(matrix.tolist())
+        single_array = map(make_one_line, [
+            self.top, self.left, self.front, self.right, self.back, self.bottom])
+        # single_array = ''.join(re.findall(r'[a-z]', str(list(single_array))))
+        return ''.join(re.findall(r'[a-z]', str(list(single_array))))
+
     def __str__(self):
         def sum_lines_np(*matrices):  # make line face in 1 line
             # for showing faces in color
@@ -322,16 +269,12 @@ class State:  # rename like rubik state or cube state
         scheme = sum_lines_np(empty_np, self.top) + '\n' + \
             scheme + sum_lines_np(empty_np, self.bottom)
 
-        make_one_line = lambda matrix: str(matrix.tolist())
-        single_array = map(make_one_line, [
-            self.top, self.left, self.front, self.right, self.back, self.bottom])
-        single_array = ''.join(re.findall(r'[a-z]', str(list(single_array))))
-
         str_dict = {k: ' '.join(map(str, v)) for k, v in self.properties.items()}
         data = {'permutation': [str_dict['corner_permutation'], str_dict['edge_permutation']],
                 'orientation': [str_dict['corner_orientation'], str_dict['edge_orientation']]}
         df = pd.DataFrame.from_dict(data, orient='index').rename(columns={0: 'corner', 1: 'edge'})
-        return scheme + '\n\n' + single_array + '\n\n' + df.to_string()
+        return scheme + '\n\n' + self.make_line_state() + '\n\n' + df.to_string()
+        # return scheme + '\n\n' + single_array + '\n\n' + df.to_string()
 
     @staticmethod
     def calculate_new_co(corner_orientation):
