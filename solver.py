@@ -1,6 +1,7 @@
 # maybe make list of notations for applying all moves
 # if shuffled state starts - dont write the turns to somewhere
 # make in moves \' in back
+# tuple use less memory than list # use tuple everywhere
 # solver:
 import numpy as np
 # if last turn was in the same coordinate axis ?
@@ -44,34 +45,38 @@ config_dict = {
     }
 }
 
+
 class Solver:
     def __init__(self, shuffled_node):  # it is the biging state
-        self.start_node = shuffled_node  # this node will be over init for each stage
+        self.state_node = shuffled_node  # this node will be over init for each stage
         self.open_list = PriorityQueue()  # add it in first step
         self.solution_path = list()
 
-        # for stage in ['stage_0', 'stage_1', 'stage_2', 'stage_3']:
-        # for stage in ['stage_1']:
-        # for stage in ['stage_0', 'stage_1']:
         for stage in range(len(stages)):  # num stage
-            self.start_solve(stage)  # start solves group
+            self.solve_cross(stage)  # start solves group # white cross
             # print('SIZe OF QUE', self.open_list.qsize())
-            self.open_list = PriorityQueue()
+            self.open_list = PriorityQueue() # need to delete open list
             # print('SIZe OF QUE', self.open_list.qsize())
-            # exit()
-
-        # обновить старт ноду для исполнения
-        print('end')
+        print('end of cross stage')
+        print('fin white cross stage\n\n')
         print(self.solution_path)
+        # print(self.state_node)
 
-    def start_solve(self, stage):
-        threshold = self.start_node.f_cost()
+        self.solve_white_edges()
+
+        print(gre('\n\nafter white corners'))
+        print(self.state_node)
+
+    def solve_cross(self, stage):
+        """ make explanation here
+        stage input here unnecessary """
+        threshold = self.state_node.f_cost()
         self.open_list = PriorityQueue()  # need i?
         solved = False  # solved state
         ii = 0
         while solved is False:
             print(ii)
-            self.open_list.put(self.start_node)
+            self.open_list.put(self.state_node)
             thresholds = list()
 
             print('threshold for children', threshold)
@@ -79,6 +84,7 @@ class Solver:
                 lowest_node = self.open_list.get()
 
                 if lowest_node.is_goal_stage():
+                    """
                     print(gre('BiNGO! the answer is here'))
                     print(lowest_node.ep)
                     print(lowest_node.eo)
@@ -87,11 +93,12 @@ class Solver:
                     print(gre(lowest_node.notation))
                     print(gre(lowest_node.notation_history))
                     print()
+                    """
                     # for k, v in lowest_node.properties.items():
                     #     print(k, v)
                     self.solution_path += lowest_node.notation_history
                     solved = True
-                    # print('id of lowest', id(lowest_node))
+                    self.state_node = lowest_node
                     """
                     self.start_node = State( no need yet for next level
                         # copy.deepcopy(lowest_node.properties), f'stage_{stage + 1}', None, None
@@ -105,7 +112,7 @@ class Solver:
                     # print(stage)
                     # print(config_dict['3x3x3'][f'{stage}_moves'])
                     new_state = State(lowest_node.properties, lowest_node.make_line_state(),
-                                stages[stage], notation,  # rename move history
+                                      stages[stage], notation,  # rename move history
                                       copy.deepcopy(lowest_node.notation_history))
                     # print(f'node cost {new_state.f_cost()}, '
                     #       f'{new_state.notation}, {new_state.notation_history}')
@@ -121,25 +128,55 @@ class Solver:
             threshold = min(thresholds)
             log(f"threshold after all : {threshold}")
             log('')
-            # if ii > 7:
-            #     exit()
             ii += 1
-            # if stage == 'stage_1':
-            #     exit()
         print('NUM ITERS IS', ii)
 
+    def solve_white_edges(self):
+        solved_state = False  # re
+        up_layer_corners = (0, 7, 3, 4)  # rename
+        # while //
+        # self.start_node.moves(['R', 'D2', 'D'])
+        #
+        for corner in up_layer_corners:  # re # i = check corner pernumtstion
+            if self.state_node.cp[corner] == corner:
+                print('match permutation')
+                if self.state_node.co[corner] == 0:
+                    print('full match')
+                    continue
+                else:
+                    if corner == 0:
+                        if self.state_node.co[corner] == 1:
+                            self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)  # or mult corner
+                        if self.state_node.co[corner] == 2:
+                            pass
+                            # [F D F' D'] check it for counterclockwise move corner
+                            # self.state_node.moves(['R', 'U', 'R', 'U'] * 2) wrong
+
+                    # elif if corner == 7
+                    # elif if corner == 3
+                    # elif if corner == 4
+
+
+            # elif self.start_node.co[i] != i:
+            #     print('check_corner_orinentation')
+
+        # print(0, self.start_node.ep[0])
+        # print(7, self.start_node.ep[7])
+        # print(3, self.start_node.ep[3])
+        # print(4, self.start_node.ep[4])
 
 # test = tests.clear_state
-test = tests.test9
+test = tests.test4
 kek = State(test['cepo'], test['faces'], None, None, None)
 # print(kek.make_line_state())
+
+# mv = "R U R' U' R U R' U'"
+# for m in mv.split():
+#     kek.moves(m)
+print(kek)
 
 
 solv = Solver(kek)
 # print('kek.faces')
 
 
-# mv = "U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2"
-# for m in mv.split():
-#     kek.moves(m)
-# print(kek)

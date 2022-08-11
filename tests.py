@@ -122,3 +122,13 @@ test11 = {  # "U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2"
     },
     'faces': 'wowgwbwrwgwgogrgygrwrgrbryrbwbrbobybowobogoyoyrygybyoy'
 }
+
+test12 = {  # RUru
+    'cepo': {
+        'corner_permutation': make_commmas('0 1 2 3 4 5 6 7'),
+        'edge_permutation': make_commmas('0 1 2 11 4 5 3 7 8 9 10 6'),
+        'corner_orientation': make_commmas('1 0 0 2 0 0 2 1'),
+        'edge_orientation': make_commmas('0 0 0 0 0 0 1 0 0 0 0 1')
+    },
+    'faces': 'growwwwwroggggggggrrbrrwrrywowbbbrbbbbwooooooyybyyyyyy'
+}

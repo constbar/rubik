@@ -3,6 +3,9 @@ from queue import PriorityQueue
 # state0 сделать как шафл
 # can @property be with __
 # if only one 1 will be type of moovig (cepo or faces) -> make cepo with 1 self withoub self.ce self.po etc.. or maybe 2
+# tuple use less memory than list. use tuple everywhere
+
+
 
 import re
 import numpy as np
@@ -40,6 +43,7 @@ class State:  # rename like rubik state or cube state
             [np.array(list(faces[s_c ** 2 * i:s_c ** 2 * (i + 1)]))
              .reshape(s_c, s_c) for i in range(num_faces)]
 
+        # notation can be send outside no in init params
         self.notation = notation  # if not none
         self.notation_history = notation_history # if not none
         self.stage = 'stage_0' if stage is None else stage
@@ -49,9 +53,6 @@ class State:  # rename like rubik state or cube state
         if self.notation:
             self.moves(self.notation)
             self.notation_history.append(self.notation)
-            # if self.notation_history:
-                # self.notation_history.append(self.notation)
-        # self.faces =
 
     def moves(self, move):  # maybe rename it
         """ !!!!!!!!!!! add description
@@ -170,6 +171,10 @@ class State:  # rename like rubik state or cube state
                 = self.left[[2]], self.front[[2]], \
                 self.right[[2]], self.back[[2]]
 
+        if isinstance(move, list):
+            for i in move:
+                self.moves(i)
+
         match move:
             case 'L': l_clockwise()
             case 'L2': [l_clockwise() for _ in range(2)]
@@ -190,22 +195,14 @@ class State:  # rename like rubik state or cube state
             case 'D2': [d_clockwise() for _ in range(2)]
             case 'D\'': [d_clockwise() for _ in range(3)]
 
-    def h_cost(self):  # input list
+    def h_cost(self):
+        """
         # maybe property  # reaname it # or get h cost
         # def weight_stage_cepo(self, stage):  # input list
         # rashiftovke of corner pern edge orientations
         # count number of not zeros?
         # middle edges to middle layer - article page 14 begin
-
-        # print(self.stage)
-        # exit()
-        # if self.stage == 'stage_0':
-        #     kek = 0
-        #     for i in range(8):
-        #         if self.cp[i] == i:
-        #             kek += 1
-        #     return 16 - self.co.count(0) - kek
-            # return 8 - self.сo.count(0)
+        """
 
         lr_slice_heuristic = 0
         if self.stage == 'stage_0':
@@ -214,15 +211,7 @@ class State:  # rename like rubik state or cube state
                     lr_slice_heuristic += 1
                 if self.eo[i] == 0:
                     lr_slice_heuristic += 1
-            # for i in [0, 3, 8, 11]:
-            #     if self.eo[i] == 0:
-            #         heur += 1
-
-            # for i in [0, 3, 4, 7]:
-            #     if self.cp[i] == i:
-            #         heur += 1
-
-            return 8 - lr_slice_heuristic
+        return 8 - lr_slice_heuristic
 
     def f_cost(self):
         """ len of history shows g(n). distance in steps from the initial node """
@@ -279,6 +268,3 @@ class State:  # rename like rubik state or cube state
     @staticmethod
     def calculate_new_co(corner_orientation):
         return 2 if corner_orientation == -1 else corner_orientation % 3
-
-
-# in solver make perebor hodov po osyam
