@@ -23,6 +23,7 @@ from termcolor import colored
 from queue import PriorityQueue
 from typing import Optional, Dict, Any
 import queue
+from random import randint
 
 logging.basicConfig(level=logging.INFO, filename='log.log',
                     filemode='w', format='%(message)s')
@@ -64,8 +65,8 @@ class Solver:
 
         self.solve_white_edges()
 
-        print(gre('\n\nafter white corners'))
-        print(self.state_node)
+        # print(gre('\n\nafter white corners'))
+        # print(self.state_node)
 
     def solve_cross(self, stage):
         """ make explanation here
@@ -132,29 +133,49 @@ class Solver:
         print('NUM ITERS IS', ii)
 
     def solve_white_edges(self):
+        print(self.state_node)
         solved_state = False  # re
         up_layer_corners = (0, 7, 3, 4)  # rename
         # while //
         # self.start_node.moves(['R', 'D2', 'D'])
-        #
+
+        # print(gre(self.state_node))
+        # exit()
+
         for corner in up_layer_corners:  # re # i = check corner pernumtstion
             if self.state_node.cp[corner] == corner:
                 print('match permutation')
                 if self.state_node.co[corner] == 0:
                     print('full match')
                     continue
-                else:
+                else:    # print(gre(self.state_node))
                     if corner == 0:
                         if self.state_node.co[corner] == 1:
-                            self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)  # or mult corner
+                            pass
                         if self.state_node.co[corner] == 2:
                             pass
+                            # print('error here')
+                            # exit()
+                    elif corner == 7:
+                        if self.state_node.co[corner] == 1:
+                            self.state_node.moves(['R', 'D', 'R\'', 'D\''] * 2)
+                        if self.state_node.co[corner] == 2:
+                            self.state_node.moves(['B\'', 'D\'', 'B', 'D'] * 2)
+
+                    elif corner == 3:  # check all ifs or make ternary operator
+                        if self.state_node.co[corner] == 1:
+                            self.state_node.moves(['F', 'D', 'F\'', 'D\''] * 2)
+                        if self.state_node.co[corner] == 2:
+                            self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)  # or mult corner
                             # [F D F' D'] check it for counterclockwise move corner
                             # self.state_node.moves(['R', 'U', 'R', 'U'] * 2) wrong
 
-                    # elif if corner == 7
-                    # elif if corner == 3
-                    # elif if corner == 4
+                    elif corner == 4:
+                        if self.state_node.co[corner] == 1:
+                            self.state_node.moves(['L', 'D', 'L\'', 'D\''] * 2)
+                        if self.state_node.co[corner] == 2:
+                            self.state_node.moves(['F\'', 'D\'', 'F', 'D'] * 2)  # dsnt check
+
 
 
             # elif self.start_node.co[i] != i:
@@ -165,15 +186,35 @@ class Solver:
         # print(3, self.start_node.ep[3])
         # print(4, self.start_node.ep[4])
 
-# test = tests.clear_state
-test = tests.test4
+def make_random_state():
+    random_list = []
+    for i in range(0, 15):
+        n = randint(0, 17)
+        random_list.append(config_dict['3x3x3']['stage_0_moves'][n])
+    # print(random_list)
+    return random_list
+
+
+test = tests.clear_state
+# test = tests.test11
 kek = State(test['cepo'], test['faces'], None, None, None)
 # print(kek.make_line_state())
+randm = make_random_state()
+print(randm)
+kek.moves(randm)
 
+print(kek)
+exit()
+# kek.moves([])
+# kek.moves(["R'", 'D', 'R', "F'", 'D2'])
+# kek.moves(['R\'', 'D\'', 'R', 'D', 'R\'', 'D\'', 'R', 'D'])
+# kek.moves(['R\'', 'D\'', 'R', 'D', 'R\'', 'D\'', 'R', 'D'])
+# print(kek)
+# exit()
 # mv = "R U R' U' R U R' U'"
 # for m in mv.split():
 #     kek.moves(m)
-print(kek)
+# print(kek)
 
 
 solv = Solver(kek)

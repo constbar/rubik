@@ -123,7 +123,7 @@ test11 = {  # "U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2"
     'faces': 'wowgwbwrwgwgogrgygrwrgrbryrbwbrbobybowobogoyoyrygybyoy'
 }
 
-test12 = {  # RUru
+test12 = {  # RUru RUru
     'cepo': {
         'corner_permutation': make_commmas('0 1 2 3 4 5 6 7'),
         'edge_permutation': make_commmas('0 1 2 11 4 5 3 7 8 9 10 6'),
