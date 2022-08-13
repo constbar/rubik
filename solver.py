@@ -31,6 +31,7 @@ log = lambda i: logging.info(i)
 
 gre = lambda i: colored(i, 'green')
 yll = lambda i: colored(i, 'yellow')
+ree = lambda i: colored(i, 'red')
 
 stages = ['stage_0'] #, 'stage_1']#, 'stage_2']  # rename to stage 0
 
@@ -142,43 +143,79 @@ class Solver:
         # print(gre(self.state_node))
         # exit()
 
-        for corner in up_layer_corners:  # re # i = check corner pernumtstion
+        for corner in up_layer_corners:  # re # i = check corner pernumtstion  # re corner num
             """each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations"""
             if self.state_node.cp[corner] == corner:
                 print('match permutation')
                 if self.state_node.co[corner] == 0:
-                    print('full match')
                     continue
                 else:    # print(gre(self.state_node))
+                    continue
                     if corner == 0:
                         if self.state_node.co[corner] == 1:
                             self.state_node.moves(['B', 'D', 'B\'', 'D\''] * 2)
-                            print(gre(self.state_node))
-                        else:
-                            # if self.state_node.co[corner] == 2:
+                        elif self.state_node.co[corner] == 2:
+                        # else:
                             self.state_node.moves(['L\'', 'D\'', 'L', 'D'] * 2)
-                            print(gre(self.state_node))
                     elif corner == 7:
                         if self.state_node.co[corner] == 1:
                             self.state_node.moves(['R', 'D', 'R\'', 'D\''] * 2)
-                        else:
-                            # if self.state_node.co[corner] == 2:
+                        # else:
+                        elif self.state_node.co[corner] == 2:
                             self.state_node.moves(['B\'', 'D\'', 'B', 'D'] * 2)
                     elif corner == 3:
                         if self.state_node.co[corner] == 1:
                             self.state_node.moves(['F', 'D', 'F\'', 'D\''] * 2)
-                        # if self.state_node.co[corner] == 2:
-                        else:
-                            self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)  # or mult corner
-                            # [F D F' D'] check it for counterclockwise move corner
-                            # self.state_node.moves(['R', 'U', 'R', 'U'] * 2) wrong
+                        # else:
+                        elif self.state_node.co[corner] == 2:
+                            self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)
                     elif corner == 4:
                         if self.state_node.co[corner] == 1:
                             self.state_node.moves(['L', 'D', 'L\'', 'D\''] * 2)
-                        else:
-                            # if self.state_node.co[corner] == 2:
-                            self.state_node.moves(['F\'', 'D\'', 'F', 'D'] * 2)  # dsnt check
-
+                        # else:
+                        elif self.state_node.co[corner] == 2:
+                            self.state_node.moves(['F\'', 'D\'', 'F', 'D'] * 2)
+            else:  # if bottom layer #  print(gre(self.state_node))
+                """make here example if on position 6 corner 
+                stay corner number 3 with following pos -> rotate"""
+                if self.state_node.cp[5] == 0:
+                    continue
+                    if self.state_node.co[5] == 0:
+                        print(yll('0'))
+                    elif self.state_node.co[5] == 1:  # green down
+                        print('ROTATION 1') #INCORRECT INDEX OF NEED CORNER!
+                        # self.state_node.moves(['L\'', 'D\'', 'L'])
+                        # self.state_node.moves(['B', 'D', 'B\''])
+                        self.state_node.moves(['L\'', 'D2', 'L', 'D', 'L\'', 'D\'', 'L']) # works
+                        # self.state_node.moves(['L\'', 'D2', 'L', 'D', 'L\'', 'D\'', 'L'])
+                        # self.state_node.moves(['B', 'D', 'B\''])
+                        # self.state_node.moves(['B\''])
+                        # self.state_node.moves(['L\'', 'D2', 'L', 'D', 'L\'', 'D\'', 'L'])
+                        print(gre(self.state_node))
+                        exit()
+                    elif self.state_node.co[5] == 2:
+                        print(gre('2'))
+                elif self.state_node.cp[2] == 7:
+                    pass
+                elif self.state_node.cp[6] == 3:
+                    # continue
+                    if self.state_node.co[3] == 0:
+                        print(gre('0'))
+                        self.state_node.moves(['F', 'D', 'F\''])
+                        print(gre(self.state_node))
+                        exit()
+                    elif self.state_node.co[3] == 1:
+                        print(gre('1'))
+                        self.state_node.moves(['R\'', 'D2', 'R', 'D', 'R\'', 'D\'', 'R'])
+                        print(gre(self.state_node))
+                        exit()
+                    elif self.state_node.co[3] == 2:
+                        print(gre('2'))
+                        self.state_node.moves(['R\'', 'D\'', 'R'])
+                        print(gre(self.state_node))
+                        exit()
+                elif self.state_node.cp[1] == 4:
+                    pass
 
 
             # elif self.start_node.co[i] != i:
@@ -199,17 +236,19 @@ def make_random_state():
 
 
 test = tests.clear_state
-# test = tests.test11
+# test = tests.test12
 
 kek = State(test['cepo'], test['faces'], None, None, None)
-# randm = make_random_state()
-randm = ['B', 'D', 'B\'', 'D\''] * 2
-
+randm = make_random_state()
+# randm = ['F', 'F2', "F'", "R'", "D'", "U'", 'D', 'D2', 'U2', 'B2', 'U2', 'F2', "F'", 'U2', "R'"]
+# randm = ['D2', 'L', 'L2', 'U2', 'F', "B'", 'U', 'L', "R'", 'B', "B'", 'R', 'B2', 'R', 'F2']
+# randm = ["D'", 'U2', 'B', "D'", "F'", 'B2', 'U2', "L'", 'D2', 'L2', 'B2', 'R', "R'", "R'", 'B']
+# randm = ['R', "R'", 'L', 'U2', "B'", 'L2', 'R', "D'", 'B', 'B', "B'", "B'", 'R', 'L2', 'F']
 print(randm)
 
 kek.moves(randm)
 
-print(kek)
+# print(kek)
 # exit()
 
 # kek.moves([])
