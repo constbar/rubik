@@ -54,7 +54,7 @@ class Solver:
         self.solution_path = list()
 
         for stage in range(len(stages)):  # num stage
-            self.solve_cross(stage)  # start solves group # white cross
+            # self.solve_cross(stage)  # start solves group # white cross
             # print('SIZe OF QUE', self.open_list.qsize())
             self.open_list = PriorityQueue() # need to delete open list
             # print('SIZe OF QUE', self.open_list.qsize())
@@ -143,6 +143,7 @@ class Solver:
         # exit()
 
         for corner in up_layer_corners:  # re # i = check corner pernumtstion
+            """each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations"""
             if self.state_node.cp[corner] == corner:
                 print('match permutation')
                 if self.state_node.co[corner] == 0:
@@ -151,29 +152,31 @@ class Solver:
                 else:    # print(gre(self.state_node))
                     if corner == 0:
                         if self.state_node.co[corner] == 1:
-                            pass
-                        if self.state_node.co[corner] == 2:
-                            pass
-                            # print('error here')
-                            # exit()
+                            self.state_node.moves(['B', 'D', 'B\'', 'D\''] * 2)
+                            print(gre(self.state_node))
+                        else:
+                            # if self.state_node.co[corner] == 2:
+                            self.state_node.moves(['L\'', 'D\'', 'L', 'D'] * 2)
+                            print(gre(self.state_node))
                     elif corner == 7:
                         if self.state_node.co[corner] == 1:
                             self.state_node.moves(['R', 'D', 'R\'', 'D\''] * 2)
-                        if self.state_node.co[corner] == 2:
+                        else:
+                            # if self.state_node.co[corner] == 2:
                             self.state_node.moves(['B\'', 'D\'', 'B', 'D'] * 2)
-
-                    elif corner == 3:  # check all ifs or make ternary operator
+                    elif corner == 3:
                         if self.state_node.co[corner] == 1:
                             self.state_node.moves(['F', 'D', 'F\'', 'D\''] * 2)
-                        if self.state_node.co[corner] == 2:
+                        # if self.state_node.co[corner] == 2:
+                        else:
                             self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)  # or mult corner
                             # [F D F' D'] check it for counterclockwise move corner
                             # self.state_node.moves(['R', 'U', 'R', 'U'] * 2) wrong
-
                     elif corner == 4:
                         if self.state_node.co[corner] == 1:
                             self.state_node.moves(['L', 'D', 'L\'', 'D\''] * 2)
-                        if self.state_node.co[corner] == 2:
+                        else:
+                            # if self.state_node.co[corner] == 2:
                             self.state_node.moves(['F\'', 'D\'', 'F', 'D'] * 2)  # dsnt check
 
 
@@ -197,14 +200,18 @@ def make_random_state():
 
 test = tests.clear_state
 # test = tests.test11
+
 kek = State(test['cepo'], test['faces'], None, None, None)
-# print(kek.make_line_state())
-randm = make_random_state()
+# randm = make_random_state()
+randm = ['B', 'D', 'B\'', 'D\''] * 2
+
 print(randm)
+
 kek.moves(randm)
 
 print(kek)
-exit()
+# exit()
+
 # kek.moves([])
 # kek.moves(["R'", 'D', 'R', "F'", 'D2'])
 # kek.moves(['R\'', 'D\'', 'R', 'D', 'R\'', 'D\'', 'R', 'D'])
