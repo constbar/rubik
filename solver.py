@@ -55,7 +55,7 @@ class Solver:
         self.solution_path = list()
 
         for stage in range(len(stages)):  # num stage
-            self.solve_cross(stage)  # start solves group # white cross
+            self.solve_white_cross(stage)  # start solves group # white cross
             # print('SIZe OF QUE', self.open_list.qsize())
             self.open_list = PriorityQueue() # need to delete open list
             # print('SIZe OF QUE', self.open_list.qsize())
@@ -64,12 +64,12 @@ class Solver:
         print(self.solution_path)
         # print(self.state_node)
 
-        self.solve_white_cross()
+        self.solve_top_layer()
 
         # print(gre('\n\nafter white corners'))
         # print(self.state_node)
 
-    def solve_cross(self, stage):
+    def solve_white_cross(self, stage):
         """ make explanation here
         stage input here unnecessary """
         threshold = self.state_node.f_cost()
@@ -133,7 +133,7 @@ class Solver:
             ii += 1
         print('NUM ITERS IS', ii)
 
-    def solve_white_cross(self):
+    def solve_top_layer(self):
         print(self.state_node)
         solved_state = False  # re
         up_layer_corners = (0, 7, 3, 4)  # rename
