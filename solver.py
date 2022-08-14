@@ -55,7 +55,7 @@ class Solver:
         self.solution_path = list()
 
         for stage in range(len(stages)):  # num stage
-            # self.solve_cross(stage)  # start solves group # white cross
+            self.solve_cross(stage)  # start solves group # white cross
             # print('SIZe OF QUE', self.open_list.qsize())
             self.open_list = PriorityQueue() # need to delete open list
             # print('SIZe OF QUE', self.open_list.qsize())
@@ -64,7 +64,7 @@ class Solver:
         print(self.solution_path)
         # print(self.state_node)
 
-        self.solve_white_edges()
+        self.solve_white_cross()
 
         # print(gre('\n\nafter white corners'))
         # print(self.state_node)
@@ -133,98 +133,91 @@ class Solver:
             ii += 1
         print('NUM ITERS IS', ii)
 
-    def solve_white_edges(self):
+    def solve_white_cross(self):
         print(self.state_node)
         solved_state = False  # re
         up_layer_corners = (0, 7, 3, 4)  # rename
-        # while //
-        # self.start_node.moves(['R', 'D2', 'D'])
 
         # print(gre(self.state_node))
-        # exit()
 
-        for corner in up_layer_corners:  # re # i = check corner pernumtstion  # re corner num
-            """each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations"""
-            if self.state_node.cp[corner] == corner:
-                print('match permutation')
-                if self.state_node.co[corner] == 0:
-                    continue
-                else:    # print(gre(self.state_node))
-                    continue
-                    if corner == 0:
-                        if self.state_node.co[corner] == 1:
-                            self.state_node.moves(['B', 'D', 'B\'', 'D\''] * 2)
-                        elif self.state_node.co[corner] == 2:
-                        # else:
-                            self.state_node.moves(['L\'', 'D\'', 'L', 'D'] * 2)
-                    elif corner == 7:
-                        if self.state_node.co[corner] == 1:
-                            self.state_node.moves(['R', 'D', 'R\'', 'D\''] * 2)
-                        # else:
-                        elif self.state_node.co[corner] == 2:
-                            self.state_node.moves(['B\'', 'D\'', 'B', 'D'] * 2)
-                    elif corner == 3:
-                        if self.state_node.co[corner] == 1:
-                            self.state_node.moves(['F', 'D', 'F\'', 'D\''] * 2)
-                        # else:
-                        elif self.state_node.co[corner] == 2:
-                            self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)
-                    elif corner == 4:
-                        if self.state_node.co[corner] == 1:
-                            self.state_node.moves(['L', 'D', 'L\'', 'D\''] * 2)
-                        # else:
-                        elif self.state_node.co[corner] == 2:
-                            self.state_node.moves(['F\'', 'D\'', 'F', 'D'] * 2)
-            else:  # if bottom layer #  print(gre(self.state_node))
-                """make here example if on position 6 corner 
-                stay corner number 3 with following pos -> rotate"""
-                if self.state_node.cp[5] == 0:
-                    continue
-                    if self.state_node.co[5] == 0:
-                        print(yll('0'))
-                    elif self.state_node.co[5] == 1:  # green down
-                        print('ROTATION 1') #INCORRECT INDEX OF NEED CORNER!
-                        # self.state_node.moves(['L\'', 'D\'', 'L'])
-                        # self.state_node.moves(['B', 'D', 'B\''])
-                        self.state_node.moves(['L\'', 'D2', 'L', 'D', 'L\'', 'D\'', 'L']) # works
-                        # self.state_node.moves(['L\'', 'D2', 'L', 'D', 'L\'', 'D\'', 'L'])
-                        # self.state_node.moves(['B', 'D', 'B\''])
-                        # self.state_node.moves(['B\''])
-                        # self.state_node.moves(['L\'', 'D2', 'L', 'D', 'L\'', 'D\'', 'L'])
-                        print(gre(self.state_node))
-                        exit()
-                    elif self.state_node.co[5] == 2:
-                        print(gre('2'))
-                elif self.state_node.cp[2] == 7:
-                    pass
-                elif self.state_node.cp[6] == 3:
-                    # continue
-                    if self.state_node.co[3] == 0:
-                        print(gre('0'))
-                        self.state_node.moves(['F', 'D', 'F\''])
-                        print(gre(self.state_node))
-                        exit()
-                    elif self.state_node.co[3] == 1:
-                        print(gre('1'))
-                        self.state_node.moves(['R\'', 'D2', 'R', 'D', 'R\'', 'D\'', 'R'])
-                        print(gre(self.state_node))
-                        exit()
-                    elif self.state_node.co[3] == 2:
-                        print(gre('2'))
-                        self.state_node.moves(['R\'', 'D\'', 'R'])
-                        print(gre(self.state_node))
-                        exit()
-                elif self.state_node.cp[1] == 4:
-                    pass
+        target_corner_permutation = False
+        target_corner_orientation = False
+        while target_corner_permutation is False or target_corner_orientation is False:
+            for corner in up_layer_corners:  # re # i = check corner pernumtstion  # re corner num
+                """each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations"""
+                if self.state_node.cp[corner] == corner:
+                    if self.state_node.co[corner] == 0:
+                        continue
+                    else:
+                        if corner == 0:
+                            if self.state_node.co[corner] == 1:
+                                self.state_node.moves(['B', 'D', 'B\'', 'D\''] * 2)
+                            elif self.state_node.co[corner] == 2:
+                                self.state_node.moves(['L\'', 'D\'', 'L', 'D'] * 2)
+                        elif corner == 7:
+                            if self.state_node.co[corner] == 1:
+                                self.state_node.moves(['R', 'D', 'R\'', 'D\''] * 2)
+                            elif self.state_node.co[corner] == 2:
+                                self.state_node.moves(['B\'', 'D\'', 'B', 'D'] * 2)
+                        elif corner == 3:
+                            if self.state_node.co[corner] == 1:
+                                self.state_node.moves(['F', 'D', 'F\'', 'D\''] * 2)
+                            elif self.state_node.co[corner] == 2:
+                                self.state_node.moves(['R\'', 'D\'', 'R', 'D'] * 2)
+                        elif corner == 4:
+                            if self.state_node.co[corner] == 1:
+                                self.state_node.moves(['L', 'D', 'L\'', 'D\''] * 2)
+                            elif self.state_node.co[corner] == 2:
+                                self.state_node.moves(['F\'', 'D\'', 'F', 'D'] * 2)
+                else:  # if bottom layer #  print(gre(self.state_node))
+                    """ make here example if on position 6 corner 
+                    stay corner number 3 with following pos -> rotate
+                    thhis is jsut variation to take need corner from bottom
+                    to top layer with definite orirntation """
+                    if self.state_node.cp[5] == 0:
+                        if self.state_node.co[0] == 0:
+                            self.state_node.moves(['B', 'D', 'B\''])
+                        elif self.state_node.co[0] == 1:
+                            self.state_node.moves(['L\'', 'D2', 'L', 'D', 'L\'', 'D\'', 'L'])
+                        elif self.state_node.co[0] == 2:
+                            self.state_node.moves(['L\'', 'D\'', 'L'])
+                    elif self.state_node.cp[2] == 7:
+                        if self.state_node.co[7] == 0:
+                            self.state_node.moves(['B\'', 'D\'', 'B'])
+                        elif self.state_node.co[7] == 1:
+                            self.state_node.moves(['R', 'D', 'R\''])
+                        elif self.state_node.co[7] == 2:
+                            self.state_node.moves(['B\'', 'D2', 'B', 'D', 'B\'', 'D\'', 'B'])
+                    elif self.state_node.cp[6] == 3:
+                        if self.state_node.co[3] == 0:
+                            self.state_node.moves(['F', 'D', 'F\''])
+                        elif self.state_node.co[3] == 1:
+                            self.state_node.moves(['R\'', 'D2', 'R', 'D', 'R\'', 'D\'', 'R'])
+                        elif self.state_node.co[3] == 2:
+                            self.state_node.moves(['R\'', 'D\'', 'R'])
+                    elif self.state_node.cp[1] == 4:
+                        if self.state_node.co[4] == 0:
+                            self.state_node.moves(['F\'', 'D\'', 'F'])
+                        elif self.state_node.co[4] == 1:
+                            self.state_node.moves(['L', 'D', 'L\''])
+                        elif self.state_node.co[4] == 2:
+                            self.state_node.moves(['F\'', 'D2', 'F', 'D', 'F\'', 'D\'', 'F'])
 
+            if self.state_node.cp[0] != 0:
+                self.state_node.moves(['L\'', 'D', 'L', 'D'])
+            elif self.state_node.cp[7] != 7:
+                self.state_node.moves(['B\'', 'D', 'B', 'D'])
+            elif self.state_node.cp[3] != 3:
+                self.state_node.moves(['R\'', 'D', 'R', 'D'])
+            elif self.state_node.cp[4] != 4:
+                self.state_node.moves(['F\'', 'D', 'F', 'D'])
+            # else:
+            #     self.state_node.moves(['D'])
 
-            # elif self.start_node.co[i] != i:
-            #     print('check_corner_orinentation')
+            target_corner_permutation = all(self.state_node.cp[cp] == cp for cp in up_layer_corners)
+            target_corner_orientation = all(self.state_node.co[cp] == 0 for cp in up_layer_corners)
+        print(gre(self.state_node))
 
-        # print(0, self.start_node.ep[0])
-        # print(7, self.start_node.ep[7])
-        # print(3, self.start_node.ep[3])
-        # print(4, self.start_node.ep[4])
 
 def make_random_state():
     random_list = []
@@ -236,19 +229,17 @@ def make_random_state():
 
 
 test = tests.clear_state
-# test = tests.test12
+# test = tests.test6
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 randm = make_random_state()
-# randm = ['F', 'F2', "F'", "R'", "D'", "U'", 'D', 'D2', 'U2', 'B2', 'U2', 'F2', "F'", 'U2', "R'"]
-# randm = ['D2', 'L', 'L2', 'U2', 'F', "B'", 'U', 'L', "R'", 'B', "B'", 'R', 'B2', 'R', 'F2']
-# randm = ["D'", 'U2', 'B', "D'", "F'", 'B2', 'U2', "L'", 'D2', 'L2', 'B2', 'R', "R'", "R'", 'B']
-# randm = ['R', "R'", 'L', 'U2', "B'", 'L2', 'R', "D'", 'B', 'B', "B'", "B'", 'R', 'L2', 'F']
+# randm = ['D', 'F', 'F', 'D', "U'", 'B', "R'", "R'", 'L', 'R', "L'", 'B2', 'F2', 'U2', "U'"]
+# randm = ['F', "L'", "R'", 'B2', "D'", 'B2', 'B2', 'D2', "B'", 'U', 'R2', "B'", "D'", "L'", 'B2']
+# randm = ["F'", "B'", "B'", 'D2', 'U2', "U'", 'R2', 'F2', 'L', 'R', "R'", 'B2', "D'", "F'", 'F2']
 print(randm)
-
 kek.moves(randm)
-
-# print(kek)
+# kek.moves(['R', "D'", 'L2', "F'", 'D', 'R', "F'"])
+print(kek)
 # exit()
 
 # kek.moves([])
@@ -264,6 +255,6 @@ kek.moves(randm)
 
 
 solv = Solver(kek)
-# print('kek.faces')
+# print(kek)
 
 
