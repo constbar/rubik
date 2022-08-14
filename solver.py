@@ -50,7 +50,7 @@ config_dict = {
 
 class Solver:
     def __init__(self, shuffled_node):  # it is the biging state
-        self.state_node = shuffled_node  # this node will be over init for each stage
+        self.state_node = shuffled_node  # this node will be over init for each stage # re like rubik state
         self.open_list = PriorityQueue()  # add it in first step
         self.solution_path = list()
 
@@ -68,6 +68,8 @@ class Solver:
 
         # print(gre('\n\nafter white corners'))
         # print(self.state_node)
+
+        self.solve_middle_layer_edges()
 
     def solve_white_cross(self, stage):
         """ make explanation here
@@ -134,15 +136,14 @@ class Solver:
         print('NUM ITERS IS', ii)
 
     def solve_top_layer(self):
-        print(self.state_node)
         solved_state = False  # re
         up_layer_corners = (0, 7, 3, 4)  # rename
 
         # print(gre(self.state_node))
 
-        target_corner_permutation = False
-        target_corner_orientation = False
-        while target_corner_permutation is False or target_corner_orientation is False:
+        correct_corner_permutation = False
+        correct_corner_orientation = False
+        while correct_corner_permutation is False or correct_corner_orientation is False:
             for corner in up_layer_corners:  # re # i = check corner pernumtstion  # re corner num
                 """each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations"""
                 if self.state_node.cp[corner] == corner:
@@ -202,7 +203,7 @@ class Solver:
                             self.state_node.moves(['L', 'D', 'L\''])
                         elif self.state_node.co[4] == 2:
                             self.state_node.moves(['F\'', 'D2', 'F', 'D', 'F\'', 'D\'', 'F'])
-
+            """ if corner zanyat drugim cornerom to ego nado smestit' and move"""
             if self.state_node.cp[0] != 0:
                 self.state_node.moves(['L\'', 'D', 'L', 'D'])
             elif self.state_node.cp[7] != 7:
@@ -214,8 +215,40 @@ class Solver:
             # else:
             #     self.state_node.moves(['D'])
 
-            target_corner_permutation = all(self.state_node.cp[cp] == cp for cp in up_layer_corners)
-            target_corner_orientation = all(self.state_node.co[cp] == 0 for cp in up_layer_corners)
+            correct_corner_permutation = all(self.state_node.cp[cp] == cp for cp in up_layer_corners)
+            correct_corner_orientation = all(self.state_node.co[cp] == 0 for cp in up_layer_corners)
+
+    def solve_middle_layer_edges(self):
+        # up_layer_corners
+        print(yll(self.state_node))
+
+        mid_layer_edges = (4, 5, 6, 7)  # rename
+
+        correct_edge_permutation = False
+        correct_edge_orientation = False
+
+        for edge in mid_layer_edges:
+            # print(edge)
+            if self.state_node.ep[edge] == edge:
+                print('bingo')
+                if self.state_node.eo[edge] == 0:
+                    continue
+                else:
+                    if edge == 4:
+                        pass
+                        # self.state_node.moves(['B', 'D\'', 'B\'', 'L', 'B\'', 'L\'', 'B', 'D\''] * 2)
+                    elif edge == 5:  # L D' L' F L' F' L D'            # can i multiple tuple?
+                        # self.state_node.moves(['L', 'D\'', 'L\'', 'F', 'L\'', 'F\'', 'L', 'D\''] * 2)
+                        pass
+                    elif edge == 6:
+                        pass
+                        self.state_node.moves(['F', 'D\'', 'F\'', 'R', 'F\'', 'R\'', 'F', 'D\''] * 2)
+                    elif edge == 7:
+                        pass # R D' R' B R' B' R D'
+                        # self.state_node.moves(['R', 'D\'', 'R\'', 'B', 'R\'', 'B\'', 'R', 'D\''] * 2)
+                        # self.state_node.moves([])
+
+
         print(gre(self.state_node))
 
 
@@ -232,14 +265,12 @@ test = tests.clear_state
 # test = tests.test6
 
 kek = State(test['cepo'], test['faces'], None, None, None)
-randm = make_random_state()
-# randm = ['D', 'F', 'F', 'D', "U'", 'B', "R'", "R'", 'L', 'R', "L'", 'B2', 'F2', 'U2', "U'"]
-# randm = ['F', "L'", "R'", 'B2', "D'", 'B2', 'B2', 'D2', "B'", 'U', 'R2', "B'", "D'", "L'", 'B2']
-# randm = ["F'", "B'", "B'", 'D2', 'U2', "U'", 'R2', 'F2', 'L', 'R', "R'", 'B2', "D'", "F'", 'F2']
+# randm = make_random_state()
+randm = ["D'", "L'", 'U', 'L2', 'B', 'B2', 'F2', "D'", 'D', 'U2', 'F2', 'B', 'F', 'B', 'B']
 print(randm)
 kek.moves(randm)
-# kek.moves(['R', "D'", 'L2', "F'", 'D', 'R', "F'"])
-print(kek)
+kek.moves(['R', 'F2', 'U', 'F', 'D', 'R', "L'", 'F2'])
+# print(kek)
 # exit()
 
 # kek.moves([])

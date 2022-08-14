@@ -131,7 +131,7 @@ class State:  # rename like rubik state or cube state
 
             self.ep[0], self.ep[11], self.ep[3], self.ep[8] = \
                 self.ep[8], self.ep[0], self.ep[11], self.ep[3]
-
+            # make in good order if it will work ofcourse
             self.co[self.cp[0]] = State.calculate_new_co(self.co[self.cp[0]] - 1)
             self.co[self.cp[3]] = State.calculate_new_co(self.co[self.cp[3]] - 1)
             self.co[self.cp[4]] = State.calculate_new_co(self.co[self.cp[4]] + 1)
