@@ -234,22 +234,66 @@ class Solver:
                 if self.state_node.eo[edge] == 0:
                     continue
                 else:
+                    # continue
+                    # print()
                     if edge == 4:
-                        pass
-                        # self.state_node.moves(['B', 'D\'', 'B\'', 'L', 'B\'', 'L\'', 'B', 'D\''] * 2)
-                    elif edge == 5:  # L D' L' F L' F' L D'            # can i multiple tuple?
-                        # self.state_node.moves(['L', 'D\'', 'L\'', 'F', 'L\'', 'F\'', 'L', 'D\''] * 2)
-                        pass
+                        print('4')
+                        self.state_node.moves(['B', 'D\'', 'B\'', 'L', 'B\'', 'L\'', 'B', 'D\''] * 2)
+                    elif edge == 5:
+                        print('5')
+                        self.state_node.moves(['L', 'D\'', 'L\'', 'F', 'L\'', 'F\'', 'L', 'D\''] * 2)
                     elif edge == 6:
-                        pass
+                        print('6')
                         self.state_node.moves(['F', 'D\'', 'F\'', 'R', 'F\'', 'R\'', 'F', 'D\''] * 2)
                     elif edge == 7:
-                        pass # R D' R' B R' B' R D'
-                        # self.state_node.moves(['R', 'D\'', 'R\'', 'B', 'R\'', 'B\'', 'R', 'D\''] * 2)
-                        # self.state_node.moves([])
+                        print('7')
+                        self.state_node.moves(['R', 'D\'', 'R\'', 'B', 'R\'', 'B\'', 'R', 'D\''] * 2)
 
 
-        print(gre(self.state_node))
+            else:  # 1 9 2 10
+                # print('!!!!!!!!!!!!!!!!!!!')
+                if self.state_node.ep[1] == 4:
+                    print(ree('0 4'))
+                    if self.state_node.eo[1] == 0:
+                        pass
+                    elif self.state_node.eo[1] == 1:
+                        self.state_node.moves(['D', 'B', 'D\'', 'B\'', 'D\'', 'L\'', 'D', 'L'])
+
+                elif self.state_node.ep[10] == 4:
+                    print('11 4')
+
+                elif self.state_node.ep[10] == 7:
+                    print(ree('10 7'))
+                    if self.state_node.eo[10] == 0:
+                        print(0) # D' R' D R D B D' B'
+                        self.state_node.moves(['D\'', 'R\'', 'D', 'R', 'D', 'B', 'D\'', 'B\''])
+                    elif self.state_node.eo[10] == 1:
+                        self.state_node.moves(['D', 'R', 'D\'', 'R\'', 'D\'', 'B\'', 'D', 'B'])
+
+                elif self.state_node.ep[2] == 7:
+                    print('3 7')
+                    # exit()
+
+                elif self.state_node.ep[2] == 6:
+                    print('3 6')
+
+                elif self.state_node.ep[9] == 6:
+                    print('8 6')
+
+                elif self.state_node.ep[9] == 5:
+                    print(ree('!!!!!!!!!!!!!!!9 5'))
+                    if self.state_node.eo[9] == 0:
+                        pass
+                    elif self.state_node.eo[9] == 1:
+                        self.state_node.moves(['D', 'L', 'D\'', 'L\'', 'D\'', 'F\'', 'D', 'F'])
+                    # exit()
+
+                elif self.state_node.ep[1] == 5:
+                    print(ree('!!!!!!!!!!!!!!0 5'))
+                    # self.state_node.moves(['D\'', '', ])
+
+            print(gre(self.state_node))
+            exit()
 
 
 def make_random_state():
@@ -265,11 +309,12 @@ test = tests.clear_state
 # test = tests.test6
 
 kek = State(test['cepo'], test['faces'], None, None, None)
-# randm = make_random_state()
-randm = ["D'", "L'", 'U', 'L2', 'B', 'B2', 'F2', "D'", 'D', 'U2', 'F2', 'B', 'F', 'B', 'B']
+randm = make_random_state()
+randm = ["L'", "L'", 'R2', 'F', "F'", "R'", "F'", "D'", 'F2', 'B', 'B', "B'", "R'", 'D', "U'"]
 print(randm)
 kek.moves(randm)
-kek.moves(['R', 'F2', 'U', 'F', 'D', 'R', "L'", 'F2'])
+print(kek)
+kek.moves(['B2', "U'", "B'", 'L', 'B2', 'F', 'R'])
 # print(kek)
 # exit()
 
