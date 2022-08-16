@@ -172,7 +172,8 @@ class State:  # rename like rubik state or cube state
                 self.right[[2]], self.back[[2]]
 
         if isinstance(move, list):
-            for i in move: # make def moove by list of mooves and we can add list of mooves to list of mooves
+            self.notation_history += move
+            for i in move:  # make def moove by list of mooves and we can add list of mooves to list of mooves
                 self.moves(i)
 
         match move:

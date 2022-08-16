@@ -53,18 +53,20 @@ class Solver:
         self.state_node = shuffled_node  # this node will be over init for each stage # re like rubik state
         self.open_list = PriorityQueue()  # add it in first step
         self.solution_path = list()
+        print(len(self.state_node.notation_history))
 
         for stage in range(len(stages)):  # num stage
             self.solve_white_cross(stage)  # start solves group # white cross
             # print('SIZe OF QUE', self.open_list.qsize())
             self.open_list = PriorityQueue() # need to delete open list
             # print('SIZe OF QUE', self.open_list.qsize())
-        print('end of cross stage')
+        print('end of cross stage', print(len(self.state_node.notation_history)))
         print('fin white cross stage\n\n')
         print(self.solution_path)
         # print(self.state_node)
 
         self.solve_top_layer()
+        print('solve top layer', len(self.state_node.notation_history))
 
         # print(gre('\n\nafter white corners'))
         # print(self.state_node)
@@ -205,14 +207,22 @@ class Solver:
                             self.state_node.moves(['F\'', 'D2', 'F', 'D', 'F\'', 'D\'', 'F'])
             """ if corner zanyat drugim cornerom to ego nado smestit' and move"""
             if self.state_node.cp[0] != 0:
-                self.state_node.moves(['L\'', 'D', 'L', 'D'])
+                # self.state_node.moves(['L\'', 'D', 'L', 'D'])
+                self.state_node.moves(['L\'', 'D', 'L'])
             elif self.state_node.cp[7] != 7:
-                self.state_node.moves(['B\'', 'D', 'B', 'D'])
+                # self.state_node.moves(['B\'', 'D', 'B', 'D'])
+                self.state_node.moves(['B\'', 'D', 'B'])
             elif self.state_node.cp[3] != 3:
-                self.state_node.moves(['R\'', 'D', 'R', 'D'])
+                # self.state_node.moves(['R\'', 'D', 'R', 'D'])
+                self.state_node.moves(['R\'', 'D', 'R'])
             elif self.state_node.cp[4] != 4:
-                self.state_node.moves(['F\'', 'D', 'F', 'D'])
+                # self.state_node.moves(['F\'', 'D', 'F', 'D'])
+                self.state_node.moves(['F\'', 'D', 'F'])
+            self.state_node.moves(['D'])
+
+            # after all permutations can be added just [D]
             # else:
+            #     print(ree('YEEEEEEEEEEEEEEEESS THIS IS WHAT I NEED'))
             #     self.state_node.moves(['D'])
 
             correct_corner_permutation = all(self.state_node.cp[cp] == cp for cp in up_layer_corners)
@@ -222,78 +232,97 @@ class Solver:
         # up_layer_corners
         print(yll(self.state_node))
 
-        mid_layer_edges = (4, 5, 6, 7)  # rename
+        mid_layer_edges = (4, 7, 6, 5)  # rename
 
-        correct_edge_permutation = False
+        correct_edge_permutation = False # what if its true -> nothing need to go in while
         correct_edge_orientation = False
 
-        for edge in mid_layer_edges:
-            # print(edge)
-            if self.state_node.ep[edge] == edge:
-                print('bingo')
-                if self.state_node.eo[edge] == 0:
-                    continue
+        i = 1
+        while correct_edge_permutation is False or correct_edge_orientation is False:
+            for edge in mid_layer_edges:
+                if self.state_node.ep[edge] == edge:
+                    if self.state_node.eo[edge] == 0:
+                        continue
+                    else:
+                        if edge == 4:
+                            self.state_node.moves(['B', 'D\'', 'B\'', 'L', 'B\'', 'L\'', 'B', 'D\''] * 2)
+                        elif edge == 7:
+                            self.state_node.moves(['R', 'D\'', 'R\'', 'B', 'R\'', 'B\'', 'R', 'D\''] * 2)
+                        elif edge == 6:
+                            self.state_node.moves(['F', 'D\'', 'F\'', 'R', 'F\'', 'R\'', 'F', 'D\''] * 2)
+                        elif edge == 5:
+                            self.state_node.moves(['L', 'D\'', 'L\'', 'F', 'L\'', 'F\'', 'L', 'D\''] * 2)
                 else:
-                    # continue
-                    # print()
-                    if edge == 4:
-                        print('4')
-                        self.state_node.moves(['B', 'D\'', 'B\'', 'L', 'B\'', 'L\'', 'B', 'D\''] * 2)
-                    elif edge == 5:
-                        print('5')
-                        self.state_node.moves(['L', 'D\'', 'L\'', 'F', 'L\'', 'F\'', 'L', 'D\''] * 2)
-                    elif edge == 6:
-                        print('6')
-                        self.state_node.moves(['F', 'D\'', 'F\'', 'R', 'F\'', 'R\'', 'F', 'D\''] * 2)
-                    elif edge == 7:
-                        print('7')
-                        self.state_node.moves(['R', 'D\'', 'R\'', 'B', 'R\'', 'B\'', 'R', 'D\''] * 2)
-
-
-            else:  # 1 9 2 10
-                # print('!!!!!!!!!!!!!!!!!!!')
-                if self.state_node.ep[1] == 4:
-                    print(ree('0 4'))
-                    if self.state_node.eo[1] == 0:
-                        pass
-                    elif self.state_node.eo[1] == 1:
+                    """ make doc """
+                    if self.state_node.ep[1] == 4:
                         self.state_node.moves(['D', 'B', 'D\'', 'B\'', 'D\'', 'L\'', 'D', 'L'])
-
-                elif self.state_node.ep[10] == 4:
-                    print('11 4')
-
-                elif self.state_node.ep[10] == 7:
-                    print(ree('10 7'))
-                    if self.state_node.eo[10] == 0:
-                        print(0) # D' R' D R D B D' B'
-                        self.state_node.moves(['D\'', 'R\'', 'D', 'R', 'D', 'B', 'D\'', 'B\''])
-                    elif self.state_node.eo[10] == 1:
+                    elif self.state_node.ep[10] == 4:
+                        self.state_node.moves(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
+                    elif self.state_node.ep[10] == 7:
                         self.state_node.moves(['D', 'R', 'D\'', 'R\'', 'D\'', 'B\'', 'D', 'B'])
-
-                elif self.state_node.ep[2] == 7:
-                    print('3 7')
-                    # exit()
-
-                elif self.state_node.ep[2] == 6:
-                    print('3 6')
-
-                elif self.state_node.ep[9] == 6:
-                    print('8 6')
-
-                elif self.state_node.ep[9] == 5:
-                    print(ree('!!!!!!!!!!!!!!!9 5'))
-                    if self.state_node.eo[9] == 0:
-                        pass
-                    elif self.state_node.eo[9] == 1:
+                    elif self.state_node.ep[2] == 7:
+                        self.state_node.moves(['D\'', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
+                    elif self.state_node.ep[2] == 6:
+                        self.state_node.moves(['D', 'F', 'D\'', 'F\'', 'D\'', 'R\'', 'D', 'R'])
+                    elif self.state_node.ep[9] == 6:
+                        self.state_node.moves(['D\'', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
+                    elif self.state_node.ep[9] == 5:
                         self.state_node.moves(['D', 'L', 'D\'', 'L\'', 'D\'', 'F\'', 'D', 'F'])
+                    elif self.state_node.ep[1] == 5:
+                        self.state_node.moves(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
+
+                    # print(gre(self.state_node))
                     # exit()
 
-                elif self.state_node.ep[1] == 5:
-                    print(ree('!!!!!!!!!!!!!!0 5'))
-                    # self.state_node.moves(['D\'', '', ])
+            # print(all([False, False]))
+            # kek = [self.state_node.ep[edge] == edge for edge in mid_layer_edges]
+            # print(any(kek))
+            # print(kek)
+            # print('i', i)
 
-            print(gre(self.state_node))
-            exit()
+                                                                                            # !!!
+            # make here if solution is already done and in upper part
+            # make property for this layer for cheking res
+            if i % 3: #4?
+                """ the cost of movve tot find in upper liocations is cheaper than out of corner down"""
+                self.state_node.moves(['D'])
+                print('make moove D')
+            else:
+                print('use out of corner')
+                if self.state_node.ep[4] != 4:
+                    self.state_node.moves(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
+                elif self.state_node.ep[7] != 7:
+                    self.state_node.moves(['D\'', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
+                elif self.state_node.ep[6] != 6:
+                    self.state_node.moves(['D\'', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
+                elif self.state_node.ep[5] != 5:
+                    self.state_node.moves(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
+                i = 0
+            i += 1
+
+            # if self.state_node.ep[4] != 4:
+            #     print('make 4')
+            #     self.state_node.moves(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
+            # elif self.state_node.ep[7] != 7:
+            #     print('make 7')
+            #     self.state_node.moves(['D\'', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
+            # elif self.state_node.ep[6] != 6:
+            #     print('make 6')
+            #     self.state_node.moves(['D\'', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
+            # elif self.state_node.ep[5] != 5:
+            #     print('make 5')
+            #     self.state_node.moves(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
+            #
+            # else:
+            #     print(ree('really need i?'))
+            #     self.state_node.moves('D')
+
+            correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in mid_layer_edges)
+            correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
+
+        print(gre(self.state_node))
+        print(len(self.state_node.notation_history))
+
 
 
 def make_random_state():
@@ -302,6 +331,7 @@ def make_random_state():
         n = randint(0, 17)
         random_list.append(config_dict['3x3x3']['stage_0_moves'][n])
     # print(random_list)
+    # need to remove first 15 turns
     return random_list
 
 
@@ -309,14 +339,15 @@ test = tests.clear_state
 # test = tests.test6
 
 kek = State(test['cepo'], test['faces'], None, None, None)
-randm = make_random_state()
-randm = ["L'", "L'", 'R2', 'F', "F'", "R'", "F'", "D'", 'F2', 'B', 'B', "B'", "R'", 'D', "U'"]
+# randm = make_random_state()
+randm = ['L2', 'F', 'D', "B'", 'L', "R'", 'F', 'F', "F'", 'R', "R'", 'L2', 'F2', "F'", 'L']
 print(randm)
 kek.moves(randm)
 print(kek)
-kek.moves(['B2', "U'", "B'", 'L', 'B2', 'F', 'R'])
+kek.moves(['L2', 'F', 'D', "B'", 'L', "R'", 'F', 'F', "F'", 'R', "R'", 'L2', 'F2', "F'", 'L', 'R', 'U', 'B', 'D2', "F'", 'R2', 'L'])
 # print(kek)
 # exit()
+
 
 # kek.moves([])
 # kek.moves(["R'", 'D', 'R', "F'", 'D2'])
