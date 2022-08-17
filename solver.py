@@ -62,7 +62,7 @@ class Solver:
             # print('SIZe OF QUE', self.open_list.qsize())
         print('end of cross stage', print(len(self.state_node.notation_history)))
         print('fin white cross stage\n\n')
-        print(self.solution_path)
+        # print(self.solution_path)
         # print(self.state_node)
 
         self.solve_top_layer()
@@ -72,6 +72,9 @@ class Solver:
         # print(self.state_node)
 
         self.solve_middle_layer_edges()
+        self.solve_yellow_cross()
+        print('history after mid layer\n', self.state_node.notation_history)
+
 
     def solve_white_cross(self, stage):
         """ make explanation here
@@ -205,6 +208,9 @@ class Solver:
                             self.state_node.moves(['L', 'D', 'L\''])
                         elif self.state_node.co[4] == 2:
                             self.state_node.moves(['F\'', 'D2', 'F', 'D', 'F\'', 'D\'', 'F'])
+
+            # check here correct_corner_permutation and correct_corner_orientation for true
+
             """ if corner zanyat drugim cornerom to ego nado smestit' and move"""
             if self.state_node.cp[0] != 0:
                 # self.state_node.moves(['L\'', 'D', 'L', 'D'])
@@ -235,7 +241,9 @@ class Solver:
         mid_layer_edges = (4, 7, 6, 5)  # rename
 
         correct_edge_permutation = False # what if its true -> nothing need to go in while
-        correct_edge_orientation = False
+        correct_edge_orientation = False # add in name mid edge
+
+        # chech it here if it right - no need to enter to while
 
         i = 1
         while correct_edge_permutation is False or correct_edge_orientation is False:
@@ -271,22 +279,20 @@ class Solver:
                     elif self.state_node.ep[1] == 5:
                         self.state_node.moves(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
 
-                    # print(gre(self.state_node))
-                    # exit()
+            # correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in mid_layer_edges)
+            # correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
 
-            # print(all([False, False]))
-            # kek = [self.state_node.ep[edge] == edge for edge in mid_layer_edges]
-            # print(any(kek))
-            # print(kek)
-            # print('i', i)
+            # if correct_edge_permutation is True and correct_edge_orientation is True:
+            #     print(correct_edge_permutation, correct_edge_orientation)
+            #     print(gre('good. it will not be redundant'))
+            #     break
 
-                                                                                            # !!!
             # make here if solution is already done and in upper part
             # make property for this layer for cheking res
-            if i % 3: #4?
+            if i % 3:  #4?
                 """ the cost of movve tot find in upper liocations is cheaper than out of corner down"""
                 self.state_node.moves(['D'])
-                print('make moove D')
+                # print('make moove D')
             else:
                 print('use out of corner')
                 if self.state_node.ep[4] != 4:
@@ -300,28 +306,32 @@ class Solver:
                 i = 0
             i += 1
 
-            # if self.state_node.ep[4] != 4:
-            #     print('make 4')
-            #     self.state_node.moves(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
-            # elif self.state_node.ep[7] != 7:
-            #     print('make 7')
-            #     self.state_node.moves(['D\'', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
-            # elif self.state_node.ep[6] != 6:
-            #     print('make 6')
-            #     self.state_node.moves(['D\'', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
-            # elif self.state_node.ep[5] != 5:
-            #     print('make 5')
-            #     self.state_node.moves(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
-            #
-            # else:
-            #     print(ree('really need i?'))
-            #     self.state_node.moves('D')
-
             correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in mid_layer_edges)
             correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
 
-        print(gre(self.state_node))
-        print(len(self.state_node.notation_history))
+        # print(gre(self.state_node))
+        print('end len after mid layer', len(self.state_node.notation_history))
+
+    def solve_yellow_cross(self):
+        # 1 9 2 10 our target
+        print(self.state_node)
+        print(self.state_node.bottom)
+
+
+
+        bottom_layer_edges = (1, 9, 2, 10)
+
+        # correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in bottom_layer_edges)
+        # correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in bottom_layer_edges)
+        # if correct_edge_permutation and correct_edge_orientation:
+        #     exit(123123)
+
+        edge_status = tuple(zip([self.state_node.ep[ep] == ep for ep in bottom_layer_edges],
+                                [self.state_node.eo[ep] == 0 for ep in bottom_layer_edges]))
+        # edge_status_dict = {bottom_layer_edges[i]: all(edge_status[i])
+        edge_status_dict = {bottom_layer_edges[i]: edge_status[i] for i in range(len(bottom_layer_edges))}
+
+        print(edge_status_dict)
 
 
 
@@ -340,26 +350,13 @@ test = tests.clear_state
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 # randm = make_random_state()
-randm = ['L2', 'F', 'D', "B'", 'L', "R'", 'F', 'F', "F'", 'R', "R'", 'L2', 'F2', "F'", 'L']
-print(randm)
+randm = ['U', "U'", 'R', 'F', "U'", 'F2', 'F', 'L', 'R2', 'L', 'D2', "B'", 'R2', 'U2', 'F', 'U', "R'", "D'", 'F', "D'", "L'", 'F', 'L', 'D', "L'", "D'", 'L', 'D', "L'", "D'", "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'F', 'D', "F'", 'D', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'D', "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'"]
+# print(randm)
 kek.moves(randm)
 print(kek)
-kek.moves(['L2', 'F', 'D', "B'", 'L', "R'", 'F', 'F', "F'", 'R', "R'", 'L2', 'F2', "F'", 'L', 'R', 'U', 'B', 'D2', "F'", 'R2', 'L'])
+# kek.moves(["D'", 'U', 'B', 'D2', 'D2', "D'", "L'", "R'", "L'", 'L2', "D'", 'L', "B'", "U'", 'F2', 'L', 'F', "D'", "L'", 'F', 'B2'])
 # print(kek)
 # exit()
-
-
-# kek.moves([])
-# kek.moves(["R'", 'D', 'R', "F'", 'D2'])
-# kek.moves(['R\'', 'D\'', 'R', 'D', 'R\'', 'D\'', 'R', 'D'])
-# kek.moves(['R\'', 'D\'', 'R', 'D', 'R\'', 'D\'', 'R', 'D'])
-# print(kek)
-# exit()
-# mv = "R U R' U' R U R' U'"
-# for m in mv.split():
-#     kek.moves(m)
-# print(kek)
-
 
 solv = Solver(kek)
 # print(kek)
