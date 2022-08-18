@@ -14,6 +14,7 @@ import numpy as np
 import tests
 import os
 import re
+import numpy
 import time
 import copy
 import logging
@@ -53,28 +54,25 @@ class Solver:
         self.state_node = shuffled_node  # this node will be over init for each stage # re like rubik state
         self.open_list = PriorityQueue()  # add it in first step
         self.solution_path = list()
-        print(len(self.state_node.notation_history))
+        # print(len(self.state_node.notation_history))
 
         for stage in range(len(stages)):  # num stage
             self.solve_white_cross(stage)  # start solves group # white cross
             # print('SIZe OF QUE', self.open_list.qsize())
-            self.open_list = PriorityQueue() # need to delete open list
+            self.open_list = PriorityQueue()  # need to delete open list
             # print('SIZe OF QUE', self.open_list.qsize())
-        print('end of cross stage', print(len(self.state_node.notation_history)))
-        print('fin white cross stage\n\n')
-        # print(self.solution_path)
-        # print(self.state_node)
+
+        print(yll(self.state_node.notation_history))
+        print(gre('after of first cross stage'), gre(len(self.state_node.notation_history)))
 
         self.solve_top_layer()
-        print('solve top layer', len(self.state_node.notation_history))
-
-        # print(gre('\n\nafter white corners'))
-        # print(self.state_node)
+        print('after solving first top layer', len(self.state_node.notation_history))
 
         self.solve_middle_layer_edges()
-        self.solve_yellow_cross()
+        print('after solving middle layer', len(self.state_node.notation_history))
         print('history after mid layer\n', self.state_node.notation_history)
 
+        self.solve_yellow_cross()
 
     def solve_white_cross(self, stage):
         """ make explanation here
@@ -84,11 +82,11 @@ class Solver:
         solved = False  # solved state
         ii = 0
         while solved is False:
-            print(ii)
+            # print(ii)
             self.open_list.put(self.state_node)
             thresholds = list()
 
-            print('threshold for children', threshold)
+            # print('threshold for children', threshold)
             while self.open_list.qsize():
                 lowest_node = self.open_list.get()
 
@@ -131,14 +129,14 @@ class Solver:
                         thresholds.append(new_state.f_cost())
             if solved is True:
                 break
-            print()
+            # print()
             # log(f"thresholds {thresholds}")
             # log(f'end while | size que {self.open_list.qsize()}')
             threshold = min(thresholds)
             log(f"threshold after all : {threshold}")
             log('')
             ii += 1
-        print('NUM ITERS IS', ii)
+        # print('NUM ITERS IS', ii)
 
     def solve_top_layer(self):
         solved_state = False  # re
@@ -236,7 +234,7 @@ class Solver:
 
     def solve_middle_layer_edges(self):
         # up_layer_corners
-        print(yll(self.state_node))
+        # print(yll(self.state_node))
 
         mid_layer_edges = (4, 7, 6, 5)  # rename
 
@@ -294,7 +292,7 @@ class Solver:
                 self.state_node.moves(['D'])
                 # print('make moove D')
             else:
-                print('use out of corner')
+                # print('use out of corner')
                 if self.state_node.ep[4] != 4:
                     self.state_node.moves(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
                 elif self.state_node.ep[7] != 7:
@@ -310,13 +308,49 @@ class Solver:
             correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
 
         # print(gre(self.state_node))
-        print('end len after mid layer', len(self.state_node.notation_history))
+        # print('end len after mid layer', len(self.state_node.notation_history))
 
     def solve_yellow_cross(self):
+        # exit()
         # 1 9 2 10 our target
         print(self.state_node)
         print(self.state_node.bottom)
+        # yellow_cubies = numpy.where(self.state_node.bottom == 'y')
+        yellow_cubies = numpy.where(self.state_node.bottom == 'y')
+        yellow_cubies = tuple(zip(yellow_cubies[0], yellow_cubies[1]))
 
+        if len(yellow_cubies) == 1:
+            print(gre('work with 1 yellow center'))
+            self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\'', 'D2', 'B', 'R', 'D', 'R\'', 'D\'', 'B\''])
+            print(self.state_node)
+            # print(self.state_node.bottom)
+            yellow_cubies = numpy.where(self.state_node.bottom == 'y')
+            yellow_cubies = tuple(zip(yellow_cubies[0], yellow_cubies[1]))
+            if len(yellow_cubies) == 3:  # > 3 to 4 or 5?
+                if ''.join(sum(self.state_node.bottom[:, [1]].tolist(), [])) != 'yyy':
+                    print('check this code')
+                    self.state_node.moves(['U'])
+                self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\''])
+                print()
+                print(self.state_node.bottom)
+            # if looks like г ->
+                # self.state_node.moves(['B', 'D', 'R', 'D\'', 'R\'', 'B\''])
+                # print(self.state_node.bottom[[1]])
+                # exit()
+                print()
+                print(self.state_node.bottom)
+
+
+
+
+            # print(self.state_node.bottom)
+            # print(self.state_node.bottom)
+            # if self.state_node.bottom
+
+        # print('yellow_cubies', yellow_cubies)
+
+
+        exit()
 
 
         bottom_layer_edges = (1, 9, 2, 10)
@@ -350,10 +384,10 @@ test = tests.clear_state
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 # randm = make_random_state()
-randm = ['U', "U'", 'R', 'F', "U'", 'F2', 'F', 'L', 'R2', 'L', 'D2', "B'", 'R2', 'U2', 'F', 'U', "R'", "D'", 'F', "D'", "L'", 'F', 'L', 'D', "L'", "D'", 'L', 'D', "L'", "D'", "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'F', 'D', "F'", 'D', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'D', "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'"]
+randm = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
+# randm with 1 yellow center = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
 # print(randm)
 kek.moves(randm)
-print(kek)
 # kek.moves(["D'", 'U', 'B', 'D2', 'D2', "D'", "L'", "R'", "L'", 'L2', "D'", 'L', "B'", "U'", 'F2', 'L', 'F', "D'", "L'", 'F', 'B2'])
 # print(kek)
 # exit()
