@@ -304,6 +304,7 @@ class Solver:
                 i = 0
             i += 1
 
+            # can be funcs
             correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in mid_layer_edges)
             correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
 
@@ -313,60 +314,80 @@ class Solver:
     def solve_yellow_cross(self):
         # exit()
         # 1 9 2 10 our target
+
         print(self.state_node)
-        print(self.state_node.bottom)
-        # yellow_cubies = numpy.where(self.state_node.bottom == 'y')
-        yellow_cubies = numpy.where(self.state_node.bottom == 'y')
-        yellow_cubies = tuple(zip(yellow_cubies[0], yellow_cubies[1]))
+        # print(gre(self.state_node.bottom[[1]][0][:-1].tolist()))
+        # print(gre(self.state_node.bottom[0][1]))
 
-        if len(yellow_cubies) == 1:
+        def get_yellow_faces():  # rename on bottom faces
+            yellow_faces = numpy.where(self.state_node.bottom == 'y')
+            return tuple(zip(yellow_faces[0], yellow_faces[1]))
+
+        """ at the beg we check the stse of yelllow side
+        usually bottom is yellow side """
+
+
+        # double code # think about it
+        back_front_bar = ''.join(sum(self.state_node.bottom[:, [1]].tolist(), []))  # need to list?
+        left_right_bar = ''.join(sum(self.state_node.bottom[[1]].tolist(), []))  # need i double [[
+
+        # if len(get_yellow_faces()) == 1:
+        if len(get_yellow_faces()) == 1 and back_front_bar !:
             print(gre('work with 1 yellow center'))
-            self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\'', 'D2', 'B', 'R', 'D', 'R\'', 'D\'', 'B\''])
-            print(self.state_node)
-            # print(self.state_node.bottom)
-            yellow_cubies = numpy.where(self.state_node.bottom == 'y')
-            yellow_cubies = tuple(zip(yellow_cubies[0], yellow_cubies[1]))
-            if len(yellow_cubies) == 3:  # > 3 to 4 or 5?
-                if ''.join(sum(self.state_node.bottom[:, [1]].tolist(), [])) != 'yyy':
-                    print('check this code')
-                    self.state_node.moves(['U'])
+            self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\'',
+                                   'D2', 'B', 'R', 'D', 'R\'', 'D\'', 'B\''])
+
+        # put it upper?
+        back_front_bar = ''.join(sum(self.state_node.bottom[:, [1]].tolist(), []))  # need to list?
+        left_right_bar = ''.join(sum(self.state_node.bottom[[1]].tolist(), []))  # need i double [[
+
+        # print(ree(self.state_node.bottom))
+        if back_front_bar != 'yyy' or left_right_bar != 'yyy':
+            """ if yellow cross dsnt exists """
+            if back_front_bar == 'yyy' or left_right_bar == 'yyy':  # unnecess condition
+                print(yll(self.state_node.bottom))
+                # print('bf       ', back_front_bar)
+                # print('lr       ', left_right_bar)
+                if back_front_bar == 'yyy':
+                    """ make parallel yellow bar """
+                    self.state_node.moves(['D'])
                 self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\''])
-                print()
-                print(self.state_node.bottom)
-            # if looks like г ->
+                print(gre(self.state_node.bottom))
+            else:
+                print(gre(self.state_node.bottom))
+                compare_little_l_shape = lambda: self.state_node.bottom[1][0] == \
+                                             self.state_node.bottom[1][1] == \
+                                             self.state_node.bottom[0][1]
+                log(f"thresholds {self.state_node.notation_history}")
+
+                # while compare_little_l_shape() is False:
+                #     print(' while loop')
+                #     self.state_node.moves(['D'])
                 # self.state_node.moves(['B', 'D', 'R', 'D\'', 'R\'', 'B\''])
-                # print(self.state_node.bottom[[1]])
-                # exit()
-                print()
-                print(self.state_node.bottom)
+        else:
+            print(yll('yellow cross is ok'))
+            pass  # crooos already here
 
+        print(ree(self.state_node.bottom))
+        print(self.state_node)
 
-
+            # print(self.state_node.bottom)
+        # if looks like г ->
+            # self.state_node.moves(['B', 'D', 'R', 'D\'', 'R\'', 'B\''])
+            # print(self.state_node.bottom[[1]])
+            # exit()
+            # print()
+            # print(self.state_node.bottom)
 
             # print(self.state_node.bottom)
             # print(self.state_node.bottom)
             # if self.state_node.bottom
 
-        # print('yellow_cubies', yellow_cubies)
+        # print('yellow_faces', yellow_faces)
 
-
-        exit()
-
-
-        bottom_layer_edges = (1, 9, 2, 10)
-
+        # bottom_layer_edges = (1, 9, 2, 10)
         # correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in bottom_layer_edges)
         # correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in bottom_layer_edges)
-        # if correct_edge_permutation and correct_edge_orientation:
-        #     exit(123123)
-
-        edge_status = tuple(zip([self.state_node.ep[ep] == ep for ep in bottom_layer_edges],
-                                [self.state_node.eo[ep] == 0 for ep in bottom_layer_edges]))
-        # edge_status_dict = {bottom_layer_edges[i]: all(edge_status[i])
-        edge_status_dict = {bottom_layer_edges[i]: edge_status[i] for i in range(len(bottom_layer_edges))}
-
-        print(edge_status_dict)
-
 
 
 def make_random_state():
@@ -384,7 +405,8 @@ test = tests.clear_state
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 # randm = make_random_state()
-randm = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
+randm =  ['D2', 'D', "R'", 'F2', "D'", 'L2', 'U2', 'L', "U'", 'R', "D'", "B'", 'U', 'B', 'F', 'U2', 'L2', "D'", "B'", 'D', 'L', "B'", "L'", 'D2', 'L', 'D', "L'", "D'", 'L', "B'", 'D2', 'B', 'D', "B'", "D'", 'B', "R'", 'D', 'R', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', 'F', 'D', "F'", "D'", 'F', 'D', "F'", "D'", 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'L', "D'", "L'", "D'", "F'", 'D', 'F', 'D', 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'"]
+
 # randm with 1 yellow center = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
 # print(randm)
 kek.moves(randm)
@@ -394,5 +416,7 @@ kek.moves(randm)
 
 solv = Solver(kek)
 # print(kek)
+
+# if d2 and d2 - del all in history
 
 
