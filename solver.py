@@ -10,6 +10,7 @@ import numpy as np
 # add timer
 # make in rubik moves in good order like subgroup state
 # try solved orientaion to solve
+# think about naming of steps in solve class
 
 import tests
 import os
@@ -70,9 +71,11 @@ class Solver:
 
         self.solve_middle_layer_edges()
         print('after solving middle layer', len(self.state_node.notation_history))
-        print('history after mid layer\n', self.state_node.notation_history)
 
         self.solve_yellow_cross()
+        print('history after bottom layer\n', self.state_node.notation_history)
+
+        self.solve_bottom_corner_permutation()
 
     def solve_white_cross(self, stage):
         """ make explanation here
@@ -139,6 +142,7 @@ class Solver:
         # print('NUM ITERS IS', ii)
 
     def solve_top_layer(self):
+        # if target already solved -> break
         solved_state = False  # re
         up_layer_corners = (0, 7, 3, 4)  # rename
 
@@ -315,13 +319,7 @@ class Solver:
         # exit()
         # 1 9 2 10 our target
 
-        print(self.state_node)
-        # print(gre(self.state_node.bottom[[1]][0][:-1].tolist()))
-        # print(gre(self.state_node.bottom[0][1]))
-
-        def get_yellow_faces():  # rename on bottom faces
-            yellow_faces = numpy.where(self.state_node.bottom == 'y')
-            return tuple(zip(yellow_faces[0], yellow_faces[1]))
+        # print(self.state_node)
 
         """ at the beg we check the stse of yellow side
         usually bottom is yellow side """
@@ -331,69 +329,117 @@ class Solver:
                 self.state_node.bottom[1][2] != self.state_node.bottom[1][1] and \
                 self.state_node.bottom[2][1] != self.state_node.bottom[1][1]:
             """if it 1 center only"""
-            print(gre('work with 1 yellow center'))
             self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\'',
                                    'D2', 'B', 'R', 'D', 'R\'', 'D\'', 'B\''])
 
-        # put it upper?
-        back_front_bar = ''.join(sum(self.state_node.bottom[:, [1]].tolist(), []))  # need to list?
-        left_right_bar = ''.join(sum(self.state_node.bottom[[1]].tolist(), []))  # need i double [[
+        left_right_bar = set(self.state_node.bottom[1])
+        back_front_bar = set(self.state_node.bottom[:, 1])
 
-        back_front_bar = set(self.state_node.bottom[1])
-        left_right_bar = set(self.state_node.bottom[:, 1])
-        print(ree(self.state_node.bottom))
-        print(back_front_bar)
-        print(left_right_bar)
-        exit()
-        # print(ree(self.state_node.bottom))
-        if back_front_bar != 'yyy' or left_right_bar != 'yyy':
+        if len(left_right_bar) != 1 or len(back_front_bar) != 1:
             """ if yellow cross dsnt exists """
-            if back_front_bar == 'yyy' or left_right_bar == 'yyy':  # unnecess condition
-                print(yll(self.state_node.bottom))
+            if len(left_right_bar) == 1 or len(back_front_bar) == 1:  # unnecess condition
+                # print(yll(self.state_node.bottom))
                 # print('bf       ', back_front_bar)
                 # print('lr       ', left_right_bar)
-                if back_front_bar == 'yyy':
+                if len(back_front_bar) == 1:
+                    # print(ree('left_right_bar match'))
                     """ make parallel yellow bar """
                     self.state_node.moves(['D'])
+                    # print(gre(self.state_node.bottom))
                 self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\''])
-                print(gre(self.state_node.bottom))
+                # print(gre(self.state_node.bottom))
             else:
-                print(gre(self.state_node.bottom))
+                # print(gre(self.state_node.bottom))
                 compare_little_l_shape = lambda: \
                     self.state_node.bottom[1][0] == \
                     self.state_node.bottom[1][1] == \
                     self.state_node.bottom[0][1]
-                log(f"thresholds {self.state_node.notation_history}")
+                while compare_little_l_shape() is False:
+                    # print(' while loop')
+                    self.state_node.moves(['D'])
+                self.state_node.moves(['B', 'D', 'R', 'D\'', 'R\'', 'B\''])
+        else:  # this condition can be deleted with upper if
+            # print(yll('yellow cross is ok'))
+            pass  # cross already here
 
-                # while compare_little_l_shape() is False:
-                #     print(' while loop')
-                #     self.state_node.moves(['D'])
-                # self.state_node.moves(['B', 'D', 'R', 'D\'', 'R\'', 'B\''])
-        else:
-            print(yll('yellow cross is ok'))
-            pass  # crooos already here
+        # print(ree(self.state_node.bottom))
+        # print(self.state_node)
 
-        print(ree(self.state_node.bottom))
+    def solve_bottom_corner_permutation(self):
+        # if target already solved -> break
+        bottom_layer_corners = (1, 6, 2, 5)
+
         print(self.state_node)
+        print('1 cp', self.state_node.cp[1])
+        print('6 cp', self.state_node.cp[6])
+        print('2 cp', self.state_node.cp[2])
+        print('5 cp', self.state_node.cp[5])
 
-            # print(self.state_node.bottom)
-        # if looks like г ->
-            # self.state_node.moves(['B', 'D', 'R', 'D\'', 'R\'', 'B\''])
-            # print(self.state_node.bottom[[1]])
-            # exit()
-            # print()
-            # print(self.state_node.bottom)
+        while [self.state_node.cp[cp] == cp for cp in bottom_layer_corners].count(True) != 2:
+            print('move D')
+            self.state_node.moves(['D'])
+        # self.state_node.moves(['D'])
+        # self.state_node.moves(['D'])
+        print()
+        print('1 cp', self.state_node.cp[1])
+        print('6 cp', self.state_node.cp[6])
+        print('2 cp', self.state_node.cp[2])
+        print('5 cp', self.state_node.cp[5])
 
-            # print(self.state_node.bottom)
-            # print(self.state_node.bottom)
-            # if self.state_node.bottom
+        correct_corner_permutation = [self.state_node.cp[cp] == cp for cp in bottom_layer_corners]
+        print(correct_corner_permutation)
+        # exit()
+        # print(correct_corner_permutation[0])
+        # print(correct_corner_permutation[2])
+        if correct_corner_permutation[0] == correct_corner_permutation[2]:
+        # if correct_corner_permutation[0] == correct_corner_permutation[2] or \
+        #         correct_corner_permutation[1] == correct_corner_permutation[3]:
+        # bec the 2 other will be the same if first conditition will be true
+            print(yll('opposite corner location'))
+            self.state_node.moves(['L', 'D\'', 'R\'', 'D', 'L\'', 'D\'', 'R', 'D2'])  # works
+        else:
+            # U R U' L' U R' U' L self.state_node.moves(['D', 'R', 'D\'', 'L\'', 'D', 'R\'', 'D\'', 'L'])
+            # self.state_node.moves(['L', 'D\'', 'R\'', 'D', 'L\'', 'D\'', 'R', 'D2'])  # works
+            print(gre('near trues'))
+        # self.state_node.moves(['L', 'D\'', 'R\'', 'D', 'L\'', 'D\'', 'R', 'D2'])  # works
 
+        # self.state_node.moves(['D'])
+        # self.state_node.moves(['D'])
+        # self.state_node.moves(['D'])
+
+
+        c1 = self.state_node.cp[1] == 1
+        c6 = self.state_node.cp[6] == 6
+        c2 = self.state_node.cp[2] == 2
+        c5 = self.state_node.cp[5] == 5
+
+        print('1 cp', self.state_node.cp[1])
+        print(ree('6 cp'), self.state_node.cp[6])
+        print(ree('2 cp'), self.state_node.cp[2])
+        print('5 cp', self.state_node.cp[5])
+
+        print(c1, c6, c2, c5)
+        exit()
+        # if self.state_node.cp[2] == 2:  # 2 5
+        #     self.state_node.moves(['D', 'R', 'D\'', 'L\'', 'D', 'R\'', 'D\'', 'L'])
+        self.state_node.moves(['D'])
+        # self.state_node.moves(['D'])
+
+
+        # self.state_node.moves(['D', 'R', 'D\'', 'L\'', 'D', 'R\'', 'D\'', 'L'])
+        # self.state_node.moves(['D'])
+        # self.state_node.moves(['D'])
+
+        print(gre(self.state_node))
+        print('1 cp', self.state_node.cp[1])
+        print('6 cp', self.state_node.cp[6])
+        print('2 cp', self.state_node.cp[2])
+        print('5 cp', self.state_node.cp[5])
         # print('yellow_faces', yellow_faces)
 
         # bottom_layer_edges = (1, 9, 2, 10)
         # correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in bottom_layer_edges)
         # correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in bottom_layer_edges)
-
 
 def make_random_state():
     random_list = []
@@ -410,7 +456,7 @@ test = tests.clear_state
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 # randm = make_random_state()
-randm =  ['D2', 'D', "R'", 'F2', "D'", 'L2', 'U2', 'L', "U'", 'R', "D'", "B'", 'U', 'B', 'F', 'U2', 'L2', "D'", "B'", 'D', 'L', "B'", "L'", 'D2', 'L', 'D', "L'", "D'", 'L', "B'", 'D2', 'B', 'D', "B'", "D'", 'B', "R'", 'D', 'R', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', 'F', 'D', "F'", "D'", 'F', 'D', "F'", "D'", 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'L', "D'", "L'", "D'", "F'", 'D', 'F', 'D', 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'"]
+randm =  ['L', 'R', 'D2', "B'", 'R2', 'F', 'L2', "U'", 'B', "R'", "D'", "L'", "L'", "B'", "F'", 'U', "R'", "D'", 'F2']
 # randm with 1 yellow center = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
 # print(randm)
 kek.moves(randm)
