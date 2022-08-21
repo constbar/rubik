@@ -323,16 +323,14 @@ class Solver:
             yellow_faces = numpy.where(self.state_node.bottom == 'y')
             return tuple(zip(yellow_faces[0], yellow_faces[1]))
 
-        """ at the beg we check the stse of yelllow side
+        """ at the beg we check the stse of yellow side
         usually bottom is yellow side """
 
-
-        # double code # think about it
-        back_front_bar = ''.join(sum(self.state_node.bottom[:, [1]].tolist(), []))  # need to list?
-        left_right_bar = ''.join(sum(self.state_node.bottom[[1]].tolist(), []))  # need i double [[
-
-        # if len(get_yellow_faces()) == 1:
-        if len(get_yellow_faces()) == 1 and back_front_bar !:
+        if self.state_node.bottom[0][1] != self.state_node.bottom[1][1] and \
+                self.state_node.bottom[1][0] != self.state_node.bottom[1][1] and \
+                self.state_node.bottom[1][2] != self.state_node.bottom[1][1] and \
+                self.state_node.bottom[2][1] != self.state_node.bottom[1][1]:
+            """if it 1 center only"""
             print(gre('work with 1 yellow center'))
             self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\'',
                                    'D2', 'B', 'R', 'D', 'R\'', 'D\'', 'B\''])
@@ -341,6 +339,12 @@ class Solver:
         back_front_bar = ''.join(sum(self.state_node.bottom[:, [1]].tolist(), []))  # need to list?
         left_right_bar = ''.join(sum(self.state_node.bottom[[1]].tolist(), []))  # need i double [[
 
+        back_front_bar = set(self.state_node.bottom[1])
+        left_right_bar = set(self.state_node.bottom[:, 1])
+        print(ree(self.state_node.bottom))
+        print(back_front_bar)
+        print(left_right_bar)
+        exit()
         # print(ree(self.state_node.bottom))
         if back_front_bar != 'yyy' or left_right_bar != 'yyy':
             """ if yellow cross dsnt exists """
@@ -355,9 +359,10 @@ class Solver:
                 print(gre(self.state_node.bottom))
             else:
                 print(gre(self.state_node.bottom))
-                compare_little_l_shape = lambda: self.state_node.bottom[1][0] == \
-                                             self.state_node.bottom[1][1] == \
-                                             self.state_node.bottom[0][1]
+                compare_little_l_shape = lambda: \
+                    self.state_node.bottom[1][0] == \
+                    self.state_node.bottom[1][1] == \
+                    self.state_node.bottom[0][1]
                 log(f"thresholds {self.state_node.notation_history}")
 
                 # while compare_little_l_shape() is False:
@@ -406,7 +411,6 @@ test = tests.clear_state
 kek = State(test['cepo'], test['faces'], None, None, None)
 # randm = make_random_state()
 randm =  ['D2', 'D', "R'", 'F2', "D'", 'L2', 'U2', 'L', "U'", 'R', "D'", "B'", 'U', 'B', 'F', 'U2', 'L2', "D'", "B'", 'D', 'L', "B'", "L'", 'D2', 'L', 'D', "L'", "D'", 'L', "B'", 'D2', 'B', 'D', "B'", "D'", 'B', "R'", 'D', 'R', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', 'F', 'D', "F'", "D'", 'F', 'D', "F'", "D'", 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'L', "D'", "L'", "D'", "F'", 'D', 'F', 'D', 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'"]
-
 # randm with 1 yellow center = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
 # print(randm)
 kek.moves(randm)

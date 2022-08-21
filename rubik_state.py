@@ -117,6 +117,7 @@ class State:  # rename like rubik state or cube state
             self.co[self.cp[5]] = State.calculate_new_co(self.co[self.cp[5]] - 1)
             self.co[self.cp[7]] = State.calculate_new_co(self.co[self.cp[7]] - 1)
             ###
+            # maybe double [[ not neccesary !!!!
             self.back = np.rot90(self.back, axes=clockwise)
             self.top[[0]], self.right[:, [2]], \
                 self.bottom[[2]], self.left[:, [0]] \
