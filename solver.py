@@ -452,17 +452,142 @@ class Solver:
 
         status_corner_orintation = [self.state_node.co[co] for co in bottom_layer_corners]
         print(gre(status_corner_orintation))
-        exit()
-        if status_corner_orintation == [0, 1, 1, 1]:
-            # R' U' R U' R' U U R U U
-        # maybe better use swich case
-        # if status_corner_orintation == [1, 1, 0, 1]:
-            self.state_node.moves(['B', 'D', 'B\'', 'D', 'B', 'D2', 'B\'', 'D2']) # WORKS! # first # maybe i took this R,U,R’,U,R,U2,R’,U2
-            # self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2']) # first
-            # self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2']) # first
+
+        if status_corner_orintation == [0, 0, 0, 0]:
+            print('great!')
+            return
+        # use a11 # try here switch case # if case == 0000 -> break
         #     self.state_node.moves(['R', 'D', 'R\'', 'D', 'R', 'D2', 'R\'', 'D2'])
-            # self.state_node.moves(['F\'', 'D\'', 'F', 'D\'', 'F\'', 'D2', 'F', 'D2'])
-            # self.state_node.moves(['F\'', 'D\'', 'F', 'D\'', 'F\'', 'D2', 'F', 'D2'])
+        elif status_corner_orintation == [0, 1, 1, 1]:  # number 2 condition
+            print('ok')
+            self.state_node.moves(['B', 'D', 'B\'', 'D', 'B', 'D2', 'B\'', 'D2'])
+        elif status_corner_orintation == [1, 0, 1, 1]:
+            print('ok')
+            self.state_node.moves(['L', 'D', 'L\'', 'D', 'L', 'D2', 'L\'', 'D2'])
+        elif status_corner_orintation == [1, 1, 0, 1]:
+            print('ok')
+            self.state_node.moves(['F', 'D', 'F\'', 'D', 'F', 'D2', 'F\'', 'D2'])
+        elif status_corner_orintation == [1, 1, 1, 0]:
+            print('ok')
+            self.state_node.moves(['R', 'D', 'R\'', 'D', 'R', 'D2', 'R\'', 'D2'])
+
+        elif status_corner_orintation == [0, 2, 2, 2]:  # number 3 condition
+            print('ok')
+            self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
+        elif status_corner_orintation == [2, 0, 2, 2]:
+            print('ok')
+            self.state_node.moves(['B\'', 'D\'', 'B', 'D\'', 'B\'', 'D2', 'B', 'D2'])
+        elif status_corner_orintation == [2, 2, 0, 2]:
+            print('ok')
+            self.state_node.moves(['L\'', 'D\'', 'L', 'D\'', 'L\'', 'D2', 'L', 'D2'])
+        elif status_corner_orintation == [2, 2, 2, 0]:
+            print('ok')
+            self.state_node.moves(['F\'', 'D\'', 'F', 'D\'', 'F\'', 'D2', 'F', 'D2'])
+
+        elif status_corner_orintation == [1, 2, 0, 0]:  # number 4 condition
+            print('ok')
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['R', 'D', 'R\'', 'D', 'R', 'D2', 'R\'', 'D2'])
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
+        elif status_corner_orintation == [0, 1, 2, 0]:
+            print('ok')
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['B', 'D', 'B\'', 'D', 'B', 'D2', 'B\'', 'D2'])
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['B\'', 'D\'', 'B', 'D\'', 'B\'', 'D2', 'B', 'D2'])
+        elif status_corner_orintation == [0, 0, 1, 2]:
+            print('ok')
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['L', 'D', 'L\'', 'D', 'L', 'D2', 'L\'', 'D2'])
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['L\'', 'D\'', 'L', 'D\'', 'L\'', 'D2', 'L', 'D2'])
+        elif status_corner_orintation == [2, 0, 0, 1]:
+            print('ok')
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['F', 'D', 'F\'', 'D', 'F', 'D2', 'F\'', 'D2'])
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['F\'', 'D\'', 'F', 'D\'', 'F\'', 'D2', 'F', 'D2'])
+
+        elif status_corner_orintation == [1, 0, 0, 2]:  # 5 condition
+            print('ok')
+            self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
+            self.state_node.moves(['R', 'D', 'R\'', 'D', 'R', 'D2', 'R\'', 'D2'])
+        elif status_corner_orintation == [2, 1, 0, 0]:
+            print('ok')
+            self.state_node.moves(['B\'', 'D\'', 'B', 'D\'', 'B\'', 'D2', 'B', 'D2'])
+            self.state_node.moves(['B', 'D', 'B\'', 'D', 'B', 'D2', 'B\'', 'D2'])
+        elif status_corner_orintation == [0, 2, 1, 0]:
+            print('ok')
+            self.state_node.moves(['L\'', 'D\'', 'L', 'D\'', 'L\'', 'D2', 'L', 'D2'])
+            self.state_node.moves(['L', 'D', 'L\'', 'D', 'L', 'D2', 'L\'', 'D2'])
+        elif status_corner_orintation == [0, 0, 2, 1]:
+            print('ok')
+            self.state_node.moves(['F\'', 'D\'', 'F', 'D\'', 'F\'', 'D2', 'F', 'D2'])
+            self.state_node.moves(['F', 'D', 'F\'', 'D', 'F', 'D2', 'F\'', 'D2'])
+
+        elif status_corner_orintation == [1, 0, 2, 0]:  # number 6 condition
+            print('ok')
+            self.state_node.moves(['D'])
+            self.state_node.moves(['R', 'D', 'R\'', 'D', 'R', 'D2', 'R\'', 'D2'])
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
+        elif status_corner_orintation == [0, 1, 0, 2]:
+            print(ree('check'))
+            self.state_node.moves(['D'])
+            self.state_node.moves(['B', 'D', 'B\'', 'D', 'B', 'D2', 'B\'', 'D2'])
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['B\'', 'D\'', 'B', 'D\'', 'B\'', 'D2', 'B', 'D2'])
+        elif status_corner_orintation == [2, 0, 1, 0]:
+            print('ok')
+            self.state_node.moves(['D'])
+            self.state_node.moves(['L', 'D', 'L\'', 'D', 'L', 'D2', 'L\'', 'D2'])
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['L\'', 'D\'', 'L', 'D\'', 'L\'', 'D2', 'L', 'D2'])
+        elif status_corner_orintation == [0, 2, 0, 1]:
+            print('ok')
+            self.state_node.moves(['D'])
+            self.state_node.moves(['F', 'D', 'F\'', 'D', 'F', 'D2', 'F\'', 'D2'])
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['F\'', 'D\'', 'F', 'D\'', 'F\'', 'D2', 'F', 'D2'])
+
+        elif status_corner_orintation == [1, 1, 2, 2]:  # number 7 condition
+            print('ok')
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['B', 'D', 'B\'', 'D', 'B', 'D2', 'B\'', 'D2'])
+            self.state_node.moves(['D'])
+            self.state_node.moves(['B', 'D', 'B\'', 'D', 'B', 'D2', 'B\'', 'D2'])
+        elif status_corner_orintation == [2, 1, 1, 2]:
+            print('ok')
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['L', 'D', 'L\'', 'D', 'L', 'D2', 'L\'', 'D2'])
+            self.state_node.moves(['D'])
+            self.state_node.moves(['L', 'D', 'L\'', 'D', 'L', 'D2', 'L\'', 'D2'])
+        elif status_corner_orintation == [2, 2, 1, 1]:
+            print('ok')
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['F', 'D', 'F\'', 'D', 'F', 'D2', 'F\'', 'D2'])
+            self.state_node.moves(['D'])
+            self.state_node.moves(['F', 'D', 'F\'', 'D', 'F', 'D2', 'F\'', 'D2'])
+        elif status_corner_orintation == [1, 2, 2, 1]:
+            print('ok')
+            self.state_node.moves(['D\''])
+            self.state_node.moves(['R', 'D', 'R\'', 'D', 'R', 'D2', 'R\'', 'D2'])
+            self.state_node.moves(['D'])
+            self.state_node.moves(['R', 'D', 'R\'', 'D', 'R', 'D2', 'R\'', 'D2'])
+
+        elif status_corner_orintation == [1, 2, 1, 2]:  # 8 condition
+            print(ree('ok'))
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['B\'', 'D\'', 'B', 'D\'', 'B\'', 'D2', 'B', 'D2'])
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['B\'', 'D\'', 'B', 'D\'', 'B\'', 'D2', 'B', 'D2'])
+        elif status_corner_orintation == [2, 1, 2, 1]:
+            print(ree('keep watching'))
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
+            self.state_node.moves(['D2'])
+            self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
 
 
         print(self.state_node)
@@ -485,9 +610,11 @@ test = tests.clear_state
 # test = tests.test6
 
 kek = State(test['cepo'], test['faces'], None, None, None)
-# randm = make_random_state()
-randm co[ 1 1 1 0] =   ['L', 'U', 'R2', "B'", 'D', 'L2', 'F', 'D2', "B'", 'D2', 'R', "D'", 'R2', "U'", 'F', 'B', 'R2', "U'", "B'", "F'", "R'", "L'", "L'", 'D', 'L', 'D', "B'", 'D2', 'B', 'D', "B'", "D'", 'B', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", "D'", 'L', 'L', 'D', "L'", "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'D', 'B', 'R', 'D', "R'", "D'", "B'"]
-randm =  ['R2', 'D', "F'", 'U', 'F2', 'U2', 'U', 'L', "U'", 'D2', 'U2', 'B2', "B'", "D'", "L'", 'F2', 'R2', 'F', 'D', "R'", 'B2', "L'", 'D2', 'L', 'D', "L'", "D'", 'L', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D', 'R', 'D', "R'", "D'", 'R', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'D', 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
+randm = make_random_state()
+# randm =   ['U2', 'U', "F'", 'D2', 'D', 'B', "L'", 'B', 'B', 'U2', "U'", 'L2', 'L', 'L', 'F', 'D', "F'", 'R', 'D', 'B', 'L', 'B', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "B'", 'D2', 'B', 'D', "B'", "D'", 'B', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", "D'", 'L', "R'", 'D', 'R', 'D', "F'", "D'", 'F', "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', 'F', 'D', "F'", 'D', 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'D', 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'B', 'D', 'R', "D'", "R'", "B'"]
+# randm = 1212 ["U'", 'D', 'D', 'R2', "U'", "U'", 'D', "D'", 'B2', "L'", 'U', 'D', "B'", 'R', 'F2', 'U2', 'L2', 'D2', 'B2', 'F']
+# randm = 2121 ['R2', "R'", 'D2', 'R2', 'D2', 'F', 'R2', "U'", 'L', 'F2', 'U', "L'", 'R', 'R', "D'", 'L2', "F'", 'R', 'D', 'R2', 'B2', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", "B'", 'D', 'B', 'D', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D2', 'R', 'D', "R'", "D'", 'R', 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
+# randm =  ['R2', 'D', "F'", 'U', 'F2', 'U2', 'U', 'L', "U'", 'D2', 'U2', 'B2', "B'", "D'", "L'", 'F2', 'R2', 'F', 'D', "R'", 'B2', "L'", 'D2', 'L', 'D', "L'", "D'", 'L', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D', 'R', 'D', "R'", "D'", 'R', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'D', 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
 # randm =  ['U', "D'", 'B', 'U', "L'", 'F2', "D'", 'L', "B'", 'D2', 'D2', 'U', "R'", 'B2', 'R2', "F'", 'B', 'R', "D'", "F'", 'R', "L'", 'L', 'D', "L'"]
 # randm with 1 yellow center = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
 # print(randm)
