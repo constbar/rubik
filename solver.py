@@ -12,7 +12,7 @@ import numpy as np
 # try solved orientaion to solve
 # think about naming of steps in solve class
 # check the num of turns after every step
-
+# status_corner_orintation or correct_edge_permutation >?? choosse naming
 
 import tests
 import os
@@ -81,6 +81,8 @@ class Solver:
         self.solve_bottom_corner_permutation()
 
         self.solve_bottom_corner_orientation()
+
+        self.solve_edge_permutation()
 
     def solve_white_cross(self, stage):
         """ make explanation here
@@ -448,12 +450,11 @@ class Solver:
     def solve_bottom_corner_orientation(self):
         bottom_layer_corners = (1, 6, 2, 5)
 
-        print(self.state_node)
 
         status_corner_orintation = [self.state_node.co[co] for co in bottom_layer_corners]
-        print(gre(status_corner_orintation))
+        # print(gre(status_corner_orintation))
 
-        if status_corner_orintation == [0, 0, 0, 0]:
+        if status_corner_orintation == [0, 0, 0, 0]:  # num 1 condition
             print('great!')
             return
         # use a11 # try here switch case # if case == 0000 -> break
@@ -589,12 +590,73 @@ class Solver:
             self.state_node.moves(['D2'])
             self.state_node.moves(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
 
+        # print(self.state_node)
 
+    def solve_edge_permutation(self):
+        bottom_layer_edges = (1, 9, 2, 10)
         print(self.state_node)
 
+        a12 = ['R2', 'D', 'B', 'F\'', 'R2', 'B\'', 'F', 'D', 'R2']
+        acw12 = ['B2', 'D', 'L', 'R\'', 'B2', 'L\'', 'R', 'D', 'B2']
+        a13 = ['R2', 'D\'', 'B', 'F\'', 'R2', 'B\'', 'F', 'D\'', 'R2']
+        acw13 = ['B2', 'D\'', 'L', 'R\'', 'B2', 'L\'', 'R', 'D\'', 'B2']
 
-        # correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in bottom_layer_edges)
-        # correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in bottom_layer_edges)
+        # status_corner_orintation = [self.state_node.co[co] for co in bottom_layer_corners]
+        # correct_edge_permutation = [self.state_node.ep[ep] == ep for ep in bottom_layer_edges]
+
+        status_edge_permutation = [self.state_node.ep[ep] for ep in bottom_layer_edges]
+        print(yll(status_edge_permutation))
+
+        if status_edge_permutation == [1, 9, 2, 10]:  # correct
+            print('all good')
+            return
+
+        elif status_edge_permutation == [2, 10, 1, 9]:
+            print('its cross OK')
+            self.state_node.moves(['R2', 'D', 'B', 'F\'', 'R2', 'B\'', 'F', 'D', 'R2'])
+            self.state_node.moves(['B2', 'D', 'L', 'R\'', 'B2', 'L\'', 'R', 'D', 'B2'])
+
+        elif status_edge_permutation == [9, 1, 10, 2]: # """ swap diagolnals?? """
+            print('ok')
+            self.state_node.moves(['L2', 'D\'', 'F', 'B\'', 'L2', 'F\'', 'B', 'D\'', 'L2'])  # 1
+            self.state_node.moves(['R2', 'D', 'B', 'F\'', 'R2', 'B\'', 'F', 'D', 'R2'])  # a13
+        elif status_edge_permutation == [10, 2, 9, 1]:
+            print('ok')
+            # L L D' F B' L L F' B D' L L + a12
+            self.state_node.moves(['R2', 'D', 'B', 'F\'', 'R2', 'B\'', 'F', 'D', 'R2'])
+            self.state_node.moves(['L2', 'D\'', 'F', 'B\'', 'L2', 'F\'', 'B', 'D\'', 'L2'])
+
+        elif status_edge_permutation == [1, 10, 9, 2]:
+            print('ok')
+            self.state_node.moves(['R2', 'D\'', 'B', 'F\'', 'R2', 'B\'', 'F', 'D\'', 'R2'])
+        elif status_edge_permutation == [1, 2, 10, 9]:
+            print('ok')
+            self.state_node.moves(['R2', 'D', 'B', 'F\'', 'R2', 'B\'', 'F', 'D', 'R2'])
+
+        elif status_edge_permutation == [10, 9, 1, 2]:
+            print('ok')
+            self.state_node.moves(['B2', 'D\'', 'L', 'R\'', 'B2', 'L\'', 'R', 'D\'', 'B2'])
+        elif status_edge_permutation == [2, 9, 10, 1]:
+            print('ok')
+            self.state_node.moves(['B2', 'D', 'L', 'R\'', 'B2', 'L\'', 'R', 'D', 'B2'])
+
+        elif status_edge_permutation == [10, 1, 2, 9]:
+            print('ok')
+            self.state_node.moves(['L2', 'D\'', 'F', 'B\'', 'L2', 'F\'', 'B', 'D\'', 'L2'])
+        elif status_edge_permutation == [9, 10, 2, 1]:
+            print('ok')
+            self.state_node.moves(['L2', 'D', 'F', 'B\'', 'L2', 'F\'', 'B', 'D', 'L2'])
+
+        elif status_edge_permutation == [2, 1, 9, 10]:
+            print('ok')
+            self.state_node.moves(['F2', 'D\'', 'R', 'L\'', 'F2', 'R\'', 'L', 'D\'', 'F2'])
+        elif status_edge_permutation == [9, 2, 1, 10]:
+            print('ok')
+            self.state_node.moves(['F2', 'D', 'R', 'L\'', 'F2', 'R\'', 'L', 'D', 'F2'])
+
+        print(gre([self.state_node.ep[ep] for ep in bottom_layer_edges]))
+        print(gre(self.state_node))
+
 
 def make_random_state():
     random_list = []
@@ -611,7 +673,7 @@ test = tests.clear_state
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 randm = make_random_state()
-# randm =   ['U2', 'U', "F'", 'D2', 'D', 'B', "L'", 'B', 'B', 'U2', "U'", 'L2', 'L', 'L', 'F', 'D', "F'", 'R', 'D', 'B', 'L', 'B', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "B'", 'D2', 'B', 'D', "B'", "D'", 'B', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", "D'", 'L', "R'", 'D', 'R', 'D', "F'", "D'", 'F', "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', 'F', 'D', "F'", 'D', 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'D', 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'B', 'D', 'R', "D'", "R'", "B'"]
+# randm =  ['R2', "U'", 'D2', 'D', 'L2', 'R2', "B'", 'F', 'B', 'U', 'B2', "L'", 'U', 'U2', 'L2', "D'", "B'", "F'", 'U', 'F2', 'R', 'B', 'F', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', "B'", 'D2', 'B', 'D', "B'", "D'", 'B', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D2', 'L', 'D', "L'", "D'", 'L', 'D', 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', 'D', 'L', "D'", "L'", "D'", "F'", 'D', 'F', 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'B', 'D', 'R', "D'", "R'", "B'"]
 # randm = 1212 ["U'", 'D', 'D', 'R2', "U'", "U'", 'D', "D'", 'B2', "L'", 'U', 'D', "B'", 'R', 'F2', 'U2', 'L2', 'D2', 'B2', 'F']
 # randm = 2121 ['R2', "R'", 'D2', 'R2', 'D2', 'F', 'R2', "U'", 'L', 'F2', 'U', "L'", 'R', 'R', "D'", 'L2', "F'", 'R', 'D', 'R2', 'B2', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", "B'", 'D', 'B', 'D', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D2', 'R', 'D', "R'", "D'", 'R', 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
 # randm =  ['R2', 'D', "F'", 'U', 'F2', 'U2', 'U', 'L', "U'", 'D2', 'U2', 'B2', "B'", "D'", "L'", 'F2', 'R2', 'F', 'D', "R'", 'B2', "L'", 'D2', 'L', 'D', "L'", "D'", 'L', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D', 'R', 'D', "R'", "D'", 'R', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'D', 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
