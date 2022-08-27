@@ -44,3 +44,9 @@ self.faces = {   # target faces
             'front': np.full((3, 3), 'g', dtype=str), 'right': np.full((3, 3), 'r', dtype=str),
             'back': np.full((3, 3), 'b', dtype=str), 'bottom': np.full((3, 3), 'y', dtype=str)
         }
+
+a12 = ['R2', 'D', 'B', 'F\'', 'R2', 'B\'', 'F', 'D', 'R2']
+        acw12 = ['B2', 'D', 'L', 'R\'', 'B2', 'L\'', 'R', 'D', 'B2']
+        a13 = ['R2', 'D\'', 'B', 'F\'', 'R2', 'B\'', 'F', 'D\'', 'R2']
+        acw13 = ['B2', 'D\'', 'L', 'R\'', 'B2', 'L\'', 'R', 'D\'', 'B2']
+last layer

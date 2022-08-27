@@ -54,7 +54,7 @@ class State:  # rename like rubik state or cube state
             self.moves(self.notation)
             self.notation_history.append(self.notation)
 
-    def moves(self, move):  # maybe rename it
+    def moves(self, move):  # maybe rename it # make permutation?
         """ !!!!!!!!!!! add description
         the notation with the number 2 makes a double clockwise rotation.
         apostrophe notation makes a counter-clockwise rotation.
