@@ -70,7 +70,7 @@ class Solver:
         print(yll(self.state_node.notation_history))
         print(gre('after of first cross stage'), gre(len(self.state_node.notation_history)))
 
-        self.solve_top_layer()
+        self.solve_top_layer_corners()
         print('after solving first top layer', len(self.state_node.notation_history))
 
         self.solve_middle_layer_edges()
@@ -150,22 +150,29 @@ class Solver:
             ii += 1
         # print('NUM ITERS IS', ii)
 
-    def solve_top_layer(self):
-        # if target already solved -> break
-        solved_state = False  # re
-        up_layer_corners = (0, 7, 3, 4)  # rename
+    def solve_top_layer_corners(self):
+        """
+        at this stage, need to bring the corners of the top layer to the correct
+        positions and in the correct orientations.
+        work goes with the corners of the top layer, look like this
+        0  ▢  7
+        ▢  ▢  ▢
+        4  ▢  3
+        each corner has an orientation of 0, 1 or 2, need to bring all corner orientations to 0
+        """
+        up_layer_corners = (0, 7, 3, 4)
+        is_correct_corner_position = lambda: all(self.state_node.cp[cp] == cp for cp in up_layer_corners)
+        is_correct_corner_orientation = lambda: all(self.state_node.co[cp] == 0 for cp in up_layer_corners)
 
-        # print(gre(self.state_node))
-
-        correct_corner_permutation = False
-        correct_corner_orientation = False
-        while correct_corner_permutation is False or correct_corner_orientation is False:
-            for corner in up_layer_corners:  # re # i = check corner pernumtstion  # re corner num
+        while is_correct_corner_position() is False or is_correct_corner_orientation() is False:
+            for corner in up_layer_corners:
                 """each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations"""
                 if self.state_node.cp[corner] == corner:
                     if self.state_node.co[corner] == 0:
+                        """ case where the corner is in its place and with a right orientation """
                         continue
                     else:
+                        """ cases where the corner is in its place and with the wrong orientation """
                         if corner == 0:
                             if self.state_node.co[corner] == 1:
                                 self.state_node.moves(['B', 'D', 'B\'', 'D\''] * 2)
@@ -186,11 +193,8 @@ class Solver:
                                 self.state_node.moves(['L', 'D', 'L\'', 'D\''] * 2)
                             elif self.state_node.co[corner] == 2:
                                 self.state_node.moves(['F\'', 'D\'', 'F', 'D'] * 2)
-                else:  # if bottom layer #  print(gre(self.state_node))
-                    """ make here example if on position 6 corner 
-                    stay corner number 3 with following pos -> rotate
-                    thhis is jsut variation to take need corner from bottom
-                    to top layer with definite orirntation """
+                else:
+                    """ cases where need to bring all the corners to their correct positions """
                     if self.state_node.cp[5] == 0:
                         if self.state_node.co[0] == 0:
                             self.state_node.moves(['B', 'D', 'B\''])
@@ -220,51 +224,44 @@ class Solver:
                         elif self.state_node.co[4] == 2:
                             self.state_node.moves(['F\'', 'D2', 'F', 'D', 'F\'', 'D\'', 'F'])
 
-            # check here correct_corner_permutation and correct_corner_orientation for true
+            if is_correct_corner_position() is True and is_correct_corner_orientation() is True:
+                return
 
-            """ if corner zanyat drugim cornerom to ego nado smestit' and move"""
+            """ block with cases when all corners are not in their positions and offsets are needed """
             if self.state_node.cp[0] != 0:
-                # self.state_node.moves(['L\'', 'D', 'L', 'D'])
                 self.state_node.moves(['L\'', 'D', 'L'])
             elif self.state_node.cp[7] != 7:
-                # self.state_node.moves(['B\'', 'D', 'B', 'D'])
                 self.state_node.moves(['B\'', 'D', 'B'])
             elif self.state_node.cp[3] != 3:
-                # self.state_node.moves(['R\'', 'D', 'R', 'D'])
                 self.state_node.moves(['R\'', 'D', 'R'])
             elif self.state_node.cp[4] != 4:
-                # self.state_node.moves(['F\'', 'D', 'F', 'D'])
                 self.state_node.moves(['F\'', 'D', 'F'])
             self.state_node.moves(['D'])
 
-            # after all permutations can be added just [D]
-            # else:
-            #     print(ree('YEEEEEEEEEEEEEEEESS THIS IS WHAT I NEED'))
-            #     self.state_node.moves(['D'])
-
-            correct_corner_permutation = all(self.state_node.cp[cp] == cp for cp in up_layer_corners)
-            correct_corner_orientation = all(self.state_node.co[cp] == 0 for cp in up_layer_corners)
-
     def solve_middle_layer_edges(self):
-        # up_layer_corners
-        # print(yll(self.state_node))
-
-        mid_layer_edges = (4, 7, 6, 5)  # rename
-
-        correct_edge_permutation = False # what if its true -> nothing need to go in while
-        correct_edge_orientation = False # add in name mid edge
-
-        # chech it here if it right - no need to enter to while
+        """
+        at this stage, need to bring the edges of the middle layer to the correct positions and orientations.
+        as a result of this stage, the top 2 rubik layers will be solved.
+        work goes with the edges of the middle layer, look like this
+        4  ▢  7
+        ▢  ▢  ▢
+        5  ▢  6
+        """
+        mid_layer_edges = (4, 7, 6, 5)
+        is_correct_edge_position = lambda: all(self.state_node.ep[ep] == ep for ep in mid_layer_edges)
+        is_correct_edge_orientation = lambda: all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
 
         i = 1
-        while correct_edge_permutation is False or correct_edge_orientation is False:
+        while is_correct_edge_position() is False or is_correct_edge_orientation() is False:
             for edge in mid_layer_edges:
                 if self.state_node.ep[edge] == edge:
                     if self.state_node.eo[edge] == 0:
+                        """ case where the edge is in its place and with a right orientation """
                         continue
                     else:
+                        """ cases where the edge is in its place and with the wrong orientation, 
+                        this edge just needs to be turned over """
                         if edge == 4:
-                            """ is this upside down of edge? ????"""
                             self.state_node.moves(['B', 'D\'', 'B\'', 'L', 'B\'', 'L\'', 'B', 'D\''] * 2)
                         elif edge == 7:
                             self.state_node.moves(['R', 'D\'', 'R\'', 'B', 'R\'', 'B\'', 'R', 'D\''] * 2)
@@ -273,9 +270,9 @@ class Solver:
                         elif edge == 5:
                             self.state_node.moves(['L', 'D\'', 'L\'', 'F', 'L\'', 'F\'', 'L', 'D\''] * 2)
                 else:
-                    """ make doc """
+                    """ cases where need to bring all the edges to their correct positions """
                     if self.state_node.ep[1] == 4:
-                        self.state_node.moves(['D', 'B', 'D\'', 'B\'', 'D\'', 'L\'', 'D', 'L'])  # i belive this 1 orient need thinl about 0
+                        self.state_node.moves(['D', 'B', 'D\'', 'B\'', 'D\'', 'L\'', 'D', 'L'])
                     elif self.state_node.ep[10] == 4:
                         self.state_node.moves(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
                     elif self.state_node.ep[10] == 7:
@@ -291,22 +288,13 @@ class Solver:
                     elif self.state_node.ep[1] == 5:
                         self.state_node.moves(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
 
-            # correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in mid_layer_edges)
-            # correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
+            if is_correct_edge_position() is True and is_correct_edge_orientation() is True:
+                return
 
-            # if correct_edge_permutation is True and correct_edge_orientation is True:
-            #     print(correct_edge_permutation, correct_edge_orientation)
-            #     print(gre('good. it will not be redundant'))
-            #     break
-
-            # make here if solution is already done and in upper part
-            # make property for this layer for cheking res
-            if i % 3:  #4?
-                """ the cost of movve tot find in upper liocations is cheaper than out of corner down"""
+            """ block with cases where all the edges are not in their positions and offsets are needed """
+            if i % 3:
                 self.state_node.moves(['D'])
-                # print('make moove D')
             else:
-                # print('use out of corner')
                 if self.state_node.ep[4] != 4:
                     self.state_node.moves(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
                 elif self.state_node.ep[7] != 7:
@@ -318,24 +306,24 @@ class Solver:
                 i = 0
             i += 1
 
-            # can be funcs
-            correct_edge_permutation = all(self.state_node.ep[ep] == ep for ep in mid_layer_edges)
-            correct_edge_orientation = all(self.state_node.eo[ep] == 0 for ep in mid_layer_edges)
-
-        # print(gre(self.state_node))
-        # print('end len after mid layer', len(self.state_node.notation_history))
-
     def solve_bottom_layer_cross(self):
         """
         at this stage, a cross is built on the bottom layer. most often in rubik it is yellow.
+        to look at the bottom layer correctly, mentally rotate the rubik along the X axis 2 times.
+        this notation is called X2 for cube rotation as R2.
         the correct location of the cross of the bottom layer looks like this
         ▢  9  ▢
         1  ▢  2
         ▢  10 ▢
         the correct cross is checked by the bar from the left to the right side and
-        the bar from the front to the back side
+        the bar from the front to the back side.
+
+        1  ▢  2 - from left to right bar
+
+        9 - from back to front bar
+        ▢
+        10
         """
-        print(yll(self.state_node)) # del
         if self.state_node.bottom[0][1] != self.state_node.bottom[1][1] and \
                 self.state_node.bottom[1][0] != self.state_node.bottom[1][1] and \
                 self.state_node.bottom[1][2] != self.state_node.bottom[1][1] and \
@@ -348,36 +336,29 @@ class Solver:
         back_front_bar = set(self.state_node.bottom[:, 1])
 
         if len(left_right_bar) != 1 or len(back_front_bar) != 1:
-            """ if yellow cross dsnt exists """
-            if len(left_right_bar) == 1 or len(back_front_bar) == 1:  # unnecess condition
-                # print(yll(self.state_node.bottom))
-                # print('bf       ', back_front_bar)
-                # print('lr       ', left_right_bar)
+            if len(left_right_bar) == 1 or len(back_front_bar) == 1:
                 if len(back_front_bar) == 1:
-                    # print(ree('left_right_bar match'))
-                    """ make parallel yellow bar """
+                    """ to apply the moves, need to bring the bf bar to lr bar """
                     self.state_node.moves(['D'])
-                    # print(gre(self.state_node.bottom))
+                """ to apply the moves that makes a cross from lr bar """
                 self.state_node.moves(['B', 'R', 'D', 'R\'', 'D\'', 'B\''])
-                # print(gre(self.state_node.bottom))
             else:
-                # print(gre(self.state_node.bottom))
                 compare_one_color_small_l_shape = lambda: \
                     self.state_node.bottom[1][0] == \
                     self.state_node.bottom[1][1] == \
                     self.state_node.bottom[0][1]
                 while compare_one_color_small_l_shape() is False:
-                    # print(' while loop')
+                    """
+                    to apply further the moves, need to bring the 'small l' 
+                    to one color in this state on the layer
+                       9
+                    1  ▢
+                    """
                     self.state_node.moves(['D'])
                 self.state_node.moves(['B', 'D', 'R', 'D\'', 'R\'', 'B\''])
-        else:  # this condition can be deleted with upper if
+        else:
             """ target stage already reached """
-            # return
-            print(ree('cross alredy here???'))
-            pass
-
-        print(gre(self.state_node))
-        exit()
+            return
 
     def solve_positions_bottom_layer_corners(self):
         """
@@ -610,7 +591,8 @@ test = tests.clear_state
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 randm = make_random_state()
-# randm = ['R2', "D'", "U'", 'B2', "U'", 'R', 'U', 'F', 'D2', "U'", "U'", 'U', 'U2', "F'", 'R', 'D2', 'F', 'L2', "D'", 'R2', "L'", "D'", 'L', 'D', "L'", "D'", 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "B'", 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "R'", 'D', 'R', 'D', 'F', 'D', "F'", 'D', 'D', 'B', "D'", "B'", "D'", "L'", 'D', 'L', "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'L', "D'", "L'", 'F', "L'", "F'", 'L', "D'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'B', 'R', 'D', "R'", "D'", "B'"]
+# randm =  ['U', 'D', "U'", 'R2', "L'", 'B2', 'U2', 'L2', 'D2', 'R2', 'R2', 'L', "B'", "L'", 'L', "B'", "R'", 'L', 'D2', 'B2', 'F2']
+# randm = cross ["U'", 'F2', 'D', 'L', "D'", 'D2', "B'", "R'", "D'", "B'", "L'", 'U', 'L2', "B'", 'B', "R'", "D'", 'F', 'R', 'F', "L'"]
 # randm = 1212 ["U'", 'D', 'D', 'R2', "U'", "U'", 'D', "D'", 'B2', "L'", 'U', 'D', "B'", 'R', 'F2', 'U2', 'L2', 'D2', 'B2', 'F']
 # randm = 2121 ['R2', "R'", 'D2', 'R2', 'D2', 'F', 'R2', "U'", 'L', 'F2', 'U', "L'", 'R', 'R', "D'", 'L2', "F'", 'R', 'D', 'R2', 'B2', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", "B'", 'D', 'B', 'D', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D2', 'R', 'D', "R'", "D'", 'R', 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
 # randm =  ['R2', 'D', "F'", 'U', 'F2', 'U2', 'U', 'L', "U'", 'D2', 'U2', 'B2', "B'", "D'", "L'", 'F2', 'R2', 'F', 'D', "R'", 'B2', "L'", 'D2', 'L', 'D', "L'", "D'", 'L', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D', 'R', 'D', "R'", "D'", 'R', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'D', 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
