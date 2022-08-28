@@ -1,19 +1,8 @@
-# maybe make list of notations for applying all moves
-# if shuffled state starts - dont write the turns to somewhere
-# make in moves \' in back
 # tuple use less memory than list # use tuple everywhere
-# solver:
-import numpy as np
 # if last turn was in the same coordinate axis ?
-# if last was repeated with this turn -> continue
-# print(st)
-# add timer
-# make in rubik moves in good order like subgroup state
 # try solved orientaion to solve
-# think about naming of steps in solve class
 # check the num of turns after every step
-# status_corner_orintation or correct_edge_permutation >?? choosse naming
-# permutaion rename in position
+# kill all prints
 
 import tests
 import os
@@ -41,20 +30,20 @@ blu = lambda i: colored(i, 'blue')
 
 
 class Solver:
-    # __slots__ =
-    possible_notations = ['L', 'L2', 'L\'', 'R', 'R2', 'R\'', # maybe better place it in rubik state
-                          'F', 'F2', 'F\'', 'B', 'B2', 'B\'',
-                          'U', 'U2', 'U\'', 'D', 'D2', 'D\'']
+    __slots__ = ('rubik_state', 'solution_time')
 
     def __init__(self, shuffled_rubik_state):
         self.rubik_state = shuffled_rubik_state
-        # print('!!!!!!!!!!!!!!!!!!', len(self.state_node.notation_history))
+        self.solution_time = .0
+        self.solve_rubik()
 
+    def solve_rubik(self):
+        start_time = timeit.default_timer()
+        # print('!!!!!!!!!!!!!!!!!!', len(self.state_node.notation_history))
         self.solve_top_layer_cross()
 
         print(yll(self.rubik_state))
         print(yll(self.rubik_state.notation_path))
-
         # exit()
         print(gre('after of first cross stage'), gre(len(self.rubik_state.notation_path)))
         self.solve_top_layer_corners()
@@ -67,6 +56,11 @@ class Solver:
         self.solve_orientations_bottom_layer_corners()
         self.solve_positions_bottom_layer_edges()
         print('history after all\n', len(self.rubik_state.notation_path))
+        self.solution_time = timeit.default_timer() - start_time
+        # print('TIME asdasdasdasd: ', self.solution_time)
+        # print path here
+        print('solution time:', gre(round(self.solution_time, 3)), 'secs')
+
 
     def solve_top_layer_cross(self):
         """
@@ -92,7 +86,7 @@ class Solver:
                     self.rubik_state = lowest_cost_state
                     return
 
-                for notation in Solver.possible_notations:
+                for notation in RubikState.possible_notations:
                     new_state = RubikState(lowest_cost_state.properties, lowest_cost_state.make_line_state(),
                                            notation, copy.deepcopy(lowest_cost_state.notation_path))
                     if new_state.f_cost <= threshold:
@@ -530,29 +524,30 @@ class Solver:
 
 
 def make_random_state():
-    config_dict = {
-        '3x3x3': {
-            # goal state ??
-            # 'subgroup_0_moves': ['U', 'D', 'L', 'R', 'F', 'B'],
-            # 'subgroup_0_moves': ['L', 'R', 'F', 'B', 'U', 'D'],
-            # 'stage_0_moves': ['L', 'R', 'F', 'B', 'U', 'D'],
-            'stage_0_moves': ["L", "L'", "L2", "R", "R'", "R2", "F", "F'", "F2", "B", "B'", "B2", "U", "U'", "U2", "D",
-                              "D'", "D2"],
-            'stage_1_moves': ['L', 'R', 'F', 'B', 'U2', 'D2'],
-            'stage_2_moves': ['L', 'R', 'F', 'B', 'U2', 'D2'],
-        }
-    }
-
     random_list = []
     # for i in range(0, 15):
     for i in range(0, 20):
         n = randint(0, 17)
-        random_list.append(config_dict['3x3x3']['stage_0_moves'][n])
+        random_list.append(RubikState.possible_notations[n])
     # print(random_list)
     # need to remove first 15 turns
     return random_list
 
+def reduce_moves(lst):
+    print(ree(len(lst)))
+    kek = list(map(lambda x: x.replace('Pant', 'Ishan'), lst))
 
+test = ['B', 'L', 'U2', "U'", 'L2', 'U', 'R2', "F'", "R'", 'B2', "U'", 'L', 'B2', 'R', "B'", 'R', 'U2', 'L2', 'L',
+        'D', "F'", 'R', 'U', "L'", 'B', 'D2', 'F2', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'",
+        'D', 'L', 'D', "L'", "D'", 'L', 'D', "L'", "D'", 'L', 'D', "B'", 'D', 'B', 'D', "B'", 'D', 'B', 'D', "B'",
+        "D'", 'B', "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', "R'", "D'", 'R', "D'", "L'", 'D', 'L', 'D', 'B', "D'",
+        "B'", 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'",
+        'R', "F'", "R'", 'F', "D'", 'D', 'L', "D'", "L'", "D'", "F'", 'D', 'F', 'D', 'B', "D'", "B'", 'L', "B'", "L'",
+        'B', "D'", 'B', "D'",
+        "B'", 'L', "B'", "L'", 'B', "D'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'B', 'R', 'D', "R'", "D'", "B'"]
+reduce_moves(test)
+exit()
+# start test from here
 test = tests.clear_state
 # test = tests.test6
 

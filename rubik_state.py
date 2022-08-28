@@ -14,15 +14,20 @@ yll = lambda i: colored(i, 'yellow')
 
 
 class RubikState:
-    # slots =
+    __slots__ = ('properties', 'cp', 'ep', 'co', 'eo',
+                 'faces', 'top', 'left', 'front', 'right',
+                 'back', 'bottom',  'notation', 'notation_path')
     cube_size = 3
     num_cube_faces = 6
     clockwise = (1, 0)
+    possible_notations = ('L', 'L2', 'L\'', 'R', 'R2', 'R\'',
+                          'F', 'F2', 'F\'', 'B', 'B2', 'B\'',
+                          'U', 'U2', 'U\'', 'D', 'D2', 'D\'')
 
     def __init__(self, properties, faces, notation, notation_path):
         self.properties = copy.deepcopy(properties)
-        self.cp = self.properties['corner_permutation']
-        self.ep = self.properties['edge_permutation']
+        self.cp = self.properties['corner_position']
+        self.ep = self.properties['edge_position']
         self.co = self.properties['corner_orientation']
         self.eo = self.properties['edge_orientation']
 
@@ -232,7 +237,7 @@ class RubikState:
             scheme + sum_lines_np(empty_np, self.bottom)
 
         str_dict = {k: ' '.join(map(str, v)) for k, v in self.properties.items()}
-        data = {'position': [str_dict['corner_permutation'], str_dict['edge_permutation']],
+        data = {'position': [str_dict['corner_position'], str_dict['edge_position']],
                 'orientation': [str_dict['corner_orientation'], str_dict['edge_orientation']]}
         df = pd.DataFrame.from_dict(data, orient='index').rename(columns={0: 'corner', 1: 'edge'})
         return scheme + '\n\n' + self.make_line_state() + '\n\n' + df.to_string()
