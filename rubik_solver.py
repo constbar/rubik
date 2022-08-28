@@ -4,6 +4,8 @@
 # check the num of turns after every step
 # kill all prints
 
+from itertools import groupby
+
 import tests
 import os
 import re
@@ -39,27 +41,34 @@ class Solver:
 
     def solve_rubik(self):
         start_time = timeit.default_timer()
-        # print('!!!!!!!!!!!!!!!!!!', len(self.state_node.notation_history))
+        print('len of shuffled', ree(len(self.rubik_state.notation_path)))
         self.solve_top_layer_cross()
 
-        print(yll(self.rubik_state))
-        print(yll(self.rubik_state.notation_path))
+        # print(yll(self.rubik_state))
+        # print(yll(self.rubik_state.notation_path))
         # exit()
-        print(gre('after of first cross stage'), gre(len(self.rubik_state.notation_path)))
+        # print(gre('after of first cross stage'), gre(len(self.rubik_state.notation_path)))
         self.solve_top_layer_corners()
-        print('after solving first top layer', len(self.rubik_state.notation_path))
+        # print('after solving first top layer', len(self.rubik_state.notation_path))
         self.solve_middle_layer_edges()
-        print('after solving middle layer', len(self.rubik_state.notation_path))
+        # print('after solving middle layer', len(self.rubik_state.notation_path))
         self.solve_bottom_layer_cross()
-        print('history after bottom layer\n', self.rubik_state.notation_path)
+        # print('history after bottom layer\n', self.rubik_state.notation_path)
         self.solve_positions_bottom_layer_corners()
         self.solve_orientations_bottom_layer_corners()
         self.solve_positions_bottom_layer_edges()
-        print('history after all\n', len(self.rubik_state.notation_path))
+        # print('history after all\n', len(self.rubik_state.notation_path))
         self.solution_time = timeit.default_timer() - start_time
         # print('TIME asdasdasdasd: ', self.solution_time)
         # print path here
-        print('solution time:', gre(round(self.solution_time, 3)), 'secs')
+        # print('solution time:', gre(round(self.solution_time, 3)), 'secs')
+
+        print('was len', yll(len(self.rubik_state.notation_path)))
+        self.reduce_repetitive_notations()
+        print('now len', gre(len(self.rubik_state.notation_path)))
+
+
+
 
 
     def solve_top_layer_cross(self):
@@ -520,13 +529,40 @@ class Solver:
             case _:# DELETE IT
                 print(ree("THIS CASE NOT EXISTS!!!"))
 
+    def reduce_repetitive_notations(self):
+        new_path = list()
+        for move in self.rubik_state.notation_path:
+            if len(move) == 1:
+                new_path.append(move)
+            elif '2' in move:
+                [new_path.append(move[0]) for _ in range(2)]
+            else:
+                [new_path.append(move[0]) for _ in range(3)]
+
+        grouped = [k + str(len(list(v))) for k, v in groupby(''.join(new_path))]
+        new_path.clear()
+        for move in grouped:
+            notation, num_turns = move[0], int(move[1:])
+            num_turns = num_turns % 4
+            if not num_turns:
+                continue
+            num_turns = num_turns % 3
+            if not num_turns:
+                new_path.append(f'{notation}\'')
+                continue
+            num_turns = num_turns % 2
+            if not num_turns:
+                new_path.append(f'{notation}2')
+                continue
+            new_path.append(f'{notation}')
+        self.rubik_state.notation_path = new_path
 
 
 
 def make_random_state():
     random_list = []
     # for i in range(0, 15):
-    for i in range(0, 20):
+    for i in range(0, 40):
         n = randint(0, 17)
         random_list.append(RubikState.possible_notations[n])
     # print(random_list)
@@ -534,19 +570,59 @@ def make_random_state():
     return random_list
 
 def reduce_moves(lst):
-    print(ree(len(lst)))
-    kek = list(map(lambda x: x.replace('Pant', 'Ishan'), lst))
+    new_path = []
+    print(yll(len(lst)))
+    for i in lst:
+        if len(i) == 1:
+            new_path.append(i)
+        elif '2' in i:
+            [new_path.append(i[0]) for _ in range(2)]
+        else:  # elif '\'' in i:
+            [new_path.append(i[0]) for _ in range(3)]
+            # new_path.append(i)
+            # new_path.append(i)
 
-test = ['B', 'L', 'U2', "U'", 'L2', 'U', 'R2', "F'", "R'", 'B2', "U'", 'L', 'B2', 'R', "B'", 'R', 'U2', 'L2', 'L',
-        'D', "F'", 'R', 'U', "L'", 'B', 'D2', 'F2', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'",
-        'D', 'L', 'D', "L'", "D'", 'L', 'D', "L'", "D'", 'L', 'D', "B'", 'D', 'B', 'D', "B'", 'D', 'B', 'D', "B'",
-        "D'", 'B', "R'", 'D', 'R', 'D', "R'", 'D', 'R', 'D', "R'", "D'", 'R', "D'", "L'", 'D', 'L', 'D', 'B', "D'",
-        "B'", 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'",
-        'R', "F'", "R'", 'F', "D'", 'D', 'L', "D'", "L'", "D'", "F'", 'D', 'F', 'D', 'B', "D'", "B'", 'L', "B'", "L'",
-        'B', "D'", 'B', "D'",
-        "B'", 'L', "B'", "L'", 'B', "D'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'B', 'R', 'D', "R'", "D'", "B'"]
-reduce_moves(test)
-exit()
+    print(ree(len(new_path)))
+    s = ''.join(new_path)
+    new_path.clear()
+    grouped = [k + str(len(list(v))) for k, v in groupby(s)]
+    # print(grouped)
+    # print(len(grouped))
+    # grouped = ['B2', 'B3', 'B4', 'B5', 'B1', 'B10', 'B2']
+    print(grouped)
+    # for move in grouped:
+    #     notation, num_turns = move[0], int(move[1:])
+    #
+    #     num_turns = num_turns % 4
+    #     if not num_turns:
+    #         continue
+    #
+    #     num_turns = num_turns % 3
+    #     if not num_turns:
+    #         new_path.append(f'{notation}\'')
+    #         continue
+    #
+    #     num_turns = num_turns % 2
+    #     if not num_turns:
+    #         new_path.append(f'{notation}2')
+    #         continue
+    #     new_path.append(f'{notation}')
+
+    # print(gre(new_path))
+    # print(gre(len(new_path)))
+
+# test = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2',
+#         'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'",
+#         "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'",
+#         'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'",
+#         'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'",
+#         "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'",
+#         'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'",
+#         'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L',
+#         "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F',
+#         "D'", "F'", 'D']
+# reduce_moves(test)
+# exit()
 # start test from here
 test = tests.clear_state
 # test = tests.test6
