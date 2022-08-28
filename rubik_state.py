@@ -208,7 +208,7 @@ class State:  # rename like rubik state or cube state
 
         lr_slice_heuristic = 0
         if self.stage == 'stage_0':
-            for i in [0, 3, 8, 11]:
+            for i in [0, 3, 8, 11]: # [0 11 3 8] cross
                 if self.ep[i] == i:
                     lr_slice_heuristic += 1
                 if self.eo[i] == 0:

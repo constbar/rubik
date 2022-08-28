@@ -55,100 +55,71 @@ config_dict = {
 
 
 class Solver:
+    # __slots__ =
+    possible_notations = ['L', 'L2', 'L\'', 'R', 'R2', 'R\'',
+                          'F', 'F2', 'F\'', 'B', 'B2', 'B\'',
+                          'U', 'U2', 'U\'', 'D', 'D2', 'D\'']
+
     def __init__(self, shuffled_node):  # it is the biging state
-        self.state_node = shuffled_node  # this node will be over init for each stage # re like rubik state
-        self.open_list = PriorityQueue()  # add it in first step
-        self.solution_path = list()
+        # maybe shuffled state # this node will be over init for each stage # re like rubik state
+        self.state_node = shuffled_node # like rubik state
         # print(len(self.state_node.notation_history))
 
         for stage in range(len(stages)):  # num stage
-            self.solve_white_cross(stage)  # start solves group # white cross
+            self.solve_top_layer_cross(stage)  # start solves group # white cross
             # print('SIZe OF QUE', self.open_list.qsize())
-            self.open_list = PriorityQueue()  # need to delete open list
+            # self.open_list = PriorityQueue()  # need to delete open list
             # print('SIZe OF QUE', self.open_list.qsize())
 
+        print(yll(self.state_node))
         print(yll(self.state_node.notation_history))
+        exit()
         print(gre('after of first cross stage'), gre(len(self.state_node.notation_history)))
-
         self.solve_top_layer_corners()
         print('after solving first top layer', len(self.state_node.notation_history))
-
         self.solve_middle_layer_edges()
         print('after solving middle layer', len(self.state_node.notation_history))
-
         self.solve_bottom_layer_cross()
         print('history after bottom layer\n', self.state_node.notation_history)
-
         self.solve_positions_bottom_layer_corners()
-
         self.solve_orientations_bottom_layer_corners()
-
         self.solve_positions_bottom_layer_edges()
         print('history after all\n', len(self.state_node.notation_history))
 
-    def solve_white_cross(self, stage):
-        """ make explanation here
-        stage input here unnecessary """
+    def solve_top_layer_cross(self, stage):
+        """
+        at this stage, a cross is assembled on the top layer. most often the top layer in the rubik is white.
+        the edges of the cross will be in the correct positions and correct orientations.
+        the correct location of the edges of the cross of the upper layer looks like this
+        ▢  11 ▢
+        0  ▢  3
+        ▢  8  ▢
+        at this stage, to optimize the number of moves, the ida star search algorithm is used to achieve
+        the target state of the stage
+        """
+        open_list = PriorityQueue()
         threshold = self.state_node.f_cost()
-        self.open_list = PriorityQueue()  # need i?
-        solved = False  # solved state
-        ii = 0
-        while solved is False:
-            # print(ii)
-            self.open_list.put(self.state_node)
+
+        while 42:
+            open_list.put(self.state_node)
             thresholds = list()
 
-            # print('threshold for children', threshold)
-            while self.open_list.qsize():
-                lowest_node = self.open_list.get()
+            while open_list.qsize():
+                lowest_cost_state = open_list.get()
+                if lowest_cost_state.is_goal_stage():
+                    self.state_node = lowest_cost_state
+                    return
 
-                if lowest_node.is_goal_stage():
-                    """
-                    print(gre('BiNGO! the answer is here'))
-                    print(lowest_node.ep)
-                    print(lowest_node.eo)
-
-                    print(gre(lowest_node))
-                    print(gre(lowest_node.notation))
-                    print(gre(lowest_node.notation_history))
-                    print()
-                    """
-                    # for k, v in lowest_node.properties.items():
-                    #     print(k, v)
-                    self.solution_path += lowest_node.notation_history
-                    solved = True
-                    self.state_node = lowest_node
-                    """
-                    self.start_node = State( no need yet for next level
-                        # copy.deepcopy(lowest_node.properties), f'stage_{stage + 1}', None, None
-                        lowest_node.properties, f'stage_{stage + 1}', None, None
-                    )
-                    """
-                    break
-
-                # for notation in g0:
-                for notation in config_dict['3x3x3'][f'stage_{stage}_moves']:
-                    # print(stage)
-                    # print(config_dict['3x3x3'][f'{stage}_moves'])
-                    new_state = State(lowest_node.properties, lowest_node.make_line_state(),
+                for notation in Solver.possible_notations:
+                    new_state = State(lowest_cost_state.properties, lowest_cost_state.make_line_state(),
                                       stages[stage], notation,  # rename move history
-                                      copy.deepcopy(lowest_node.notation_history))
-                    # print(f'node cost {new_state.f_cost()}, '
-                    #       f'{new_state.notation}, {new_state.notation_history}')
+                                      copy.deepcopy(lowest_cost_state.notation_history))
+
                     if new_state.f_cost() <= threshold:
-                        self.open_list.put(new_state)
+                        open_list.put(new_state)
                     else:
                         thresholds.append(new_state.f_cost())
-            if solved is True:
-                break
-            # print()
-            # log(f"thresholds {thresholds}")
-            # log(f'end while | size que {self.open_list.qsize()}')
             threshold = min(thresholds)
-            log(f"threshold after all : {threshold}")
-            log('')
-            ii += 1
-        # print('NUM ITERS IS', ii)
 
     def solve_top_layer_corners(self):
         """
@@ -311,7 +282,7 @@ class Solver:
         at this stage, a cross is built on the bottom layer. most often in rubik it is yellow.
         to look at the bottom layer correctly, mentally rotate the rubik along the X axis 2 times.
         this notation is called X2 for cube rotation as R2.
-        the correct location of the cross of the bottom layer looks like this
+        the correct location of the edges of the cross of the bottom layer looks like this
         ▢  9  ▢
         1  ▢  2
         ▢  10 ▢
@@ -591,7 +562,7 @@ test = tests.clear_state
 
 kek = State(test['cepo'], test['faces'], None, None, None)
 randm = make_random_state()
-# randm =  ['U', 'D', "U'", 'R2', "L'", 'B2', 'U2', 'L2', 'D2', 'R2', 'R2', 'L', "B'", "L'", 'L', "B'", "R'", 'L', 'D2', 'B2', 'F2']
+# randm = ['F2', "R'", "R'", 'B', "U'", "U'", "U'", 'U', "R'", 'D2', 'F', "L'", 'D', 'D2', 'R', "D'", "R'", 'B', 'D', 'R2', 'D2', 'F2', "L'"]
 # randm = cross ["U'", 'F2', 'D', 'L', "D'", 'D2', "B'", "R'", "D'", "B'", "L'", 'U', 'L2', "B'", 'B', "R'", "D'", 'F', 'R', 'F', "L'"]
 # randm = 1212 ["U'", 'D', 'D', 'R2', "U'", "U'", 'D', "D'", 'B2', "L'", 'U', 'D', "B'", 'R', 'F2', 'U2', 'L2', 'D2', 'B2', 'F']
 # randm = 2121 ['R2', "R'", 'D2', 'R2', 'D2', 'F', 'R2', "U'", 'L', 'F2', 'U', "L'", 'R', 'R', "D'", 'L2', "F'", 'R', 'D', 'R2', 'B2', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", "B'", 'D', 'B', 'D', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D2', 'R', 'D', "R'", "D'", 'R', 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
