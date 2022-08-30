@@ -234,52 +234,60 @@ class Solver:
                         if temp_state.ep[4] == 4 and temp_state.eo[4] == 0:
                             self.rubik_state.make_move(['D', 'B', 'D\'', 'B\'', 'D\'', 'L\'', 'D', 'L'])
                         else:
-                            self.rubik_state.make_move(['D2', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
+                            self.rubik_state.make_move(['D\''])
+                            self.rubik_state.make_move(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
                     elif self.rubik_state.ep[10] == 4:
                         temp_state.make_move(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
                         if temp_state.ep[4] == 4 and temp_state.eo[4] == 0:
                             self.rubik_state.make_move(['D\'', 'L\'', 'D', 'L', 'D', 'B', 'D\'', 'B\''])
                         else:
-                            self.rubik_state.make_move(['D2', 'B', 'D\'', 'B\'', 'D\'', 'L\'', 'D', 'L'])
+                            self.rubik_state.make_move(['D'])
+                            self.rubik_state.make_move(['D', 'B', 'D\'', 'B\'', 'D\'', 'L\'', 'D', 'L'])
 
                     elif self.rubik_state.ep[10] == 7:
                         temp_state.make_move(['D', 'R', 'D\'', 'R\'', 'D\'', 'B\'', 'D', 'B'])
                         if temp_state.ep[7] == 7 and temp_state.eo[7] == 0:
                             self.rubik_state.make_move(['D', 'R', 'D\'', 'R\'', 'D\'', 'B\'', 'D', 'B'])
                         else:
-                            self.rubik_state.make_move(['D2', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
+                            self.rubik_state.make_move(['D\''])
+                            self.rubik_state.make_move(['D\'', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
                     elif self.rubik_state.ep[2] == 7:
                         temp_state.make_move(['D\'', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
                         if temp_state.ep[7] == 7 and temp_state.eo[7] == 0:
                             self.rubik_state.make_move(['D\'', 'B\'', 'D', 'B', 'D', 'R', 'D\'', 'R\''])
                         else:
-                            self.rubik_state.make_move(['D2', 'R', 'D\'', 'R\'', 'D\'', 'B\'', 'D', 'B'])
+                            self.rubik_state.make_move(['D'])
+                            self.rubik_state.make_move(['D', 'R', 'D\'', 'R\'', 'D\'', 'B\'', 'D', 'B'])
 
                     elif self.rubik_state.ep[2] == 6:
                         temp_state.make_move(['D', 'F', 'D\'', 'F\'', 'D\'', 'R\'', 'D', 'R'])
                         if temp_state.ep[6] == 6 and temp_state.eo[6] == 0:
                             self.rubik_state.make_move(['D', 'F', 'D\'', 'F\'', 'D\'', 'R\'', 'D', 'R'])
                         else:
-                            self.rubik_state.make_move(['D2', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
+                            self.rubik_state.make_move(['D\''])
+                            self.rubik_state.make_move(['D\'', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
                     elif self.rubik_state.ep[9] == 6:
                         temp_state.make_move(['D\'', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
                         if temp_state.ep[6] == 6 and temp_state.eo[6] == 0:
                             self.rubik_state.make_move(['D\'', 'R\'', 'D', 'R', 'D', 'F', 'D\'', 'F\''])
                         else:
-                            self.rubik_state.make_move(['D2', 'F', 'D\'', 'F\'', 'D\'', 'R\'', 'D', 'R'])
+                            self.rubik_state.make_move(['D'])
+                            self.rubik_state.make_move(['D', 'F', 'D\'', 'F\'', 'D\'', 'R\'', 'D', 'R'])
 
                     elif self.rubik_state.ep[9] == 5:
                         temp_state.make_move(['D', 'L', 'D\'', 'L\'', 'D\'', 'F\'', 'D', 'F'])
                         if temp_state.ep[5] == 5 and temp_state.eo[5] == 0:
                             self.rubik_state.make_move(['D', 'L', 'D\'', 'L\'', 'D\'', 'F\'', 'D', 'F'])
                         else:
-                            self.rubik_state.make_move(['D2', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
+                            self.rubik_state.make_move(['D\''])
+                            self.rubik_state.make_move(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
                     elif self.rubik_state.ep[1] == 5:
                         temp_state.make_move(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
                         if temp_state.ep[5] == 5 and temp_state.eo[5] == 0:
                             self.rubik_state.make_move(['D\'', 'F\'', 'D', 'F', 'D', 'L', 'D\'', 'L\''])
                         else:
-                            self.rubik_state.make_move(['D2', 'L', 'D\'', 'L\'', 'D\'', 'F\'', 'D', 'F'])
+                            self.rubik_state.make_move(['D'])
+                            self.rubik_state.make_move(['D', 'L', 'D\'', 'L\'', 'D\'', 'F\'', 'D', 'F'])
 
             if is_correct_edge_position() is True and is_correct_edge_orientation() is True:
                 return
@@ -668,7 +676,7 @@ test = tests.clear_state
 
 kek = RubikState(test['cepo'], test['faces'], None, None)
 randm = make_random_state()
-# randm = ['L', 'R', 'R2', 'R2', "D'", 'U', 'F', 'F', 'L2', 'B', 'F2', 'B', "B'", 'R', 'U', 'U2', 'B', "U'", 'R', 'U2', "D'", 'B2', 'U', "D'", "B'", "F'", "B'", "L'", 'B2', 'D2', "U'", 'B', 'B', 'U2', 'U', 'L2', 'F', 'F', 'B2', 'F']
+# randm = ['U2', "U'", "R'", 'U2', "B'", 'F', 'U', 'L2', 'D2', 'F', 'B', 'L2', "B'", "F'", 'R', "L'", 'L', 'F', 'L', 'U2', "L'", "L'", 'B', "D'", 'D', 'F2', "R'", 'B2', 'U', 'B', 'D2', 'D', "F'", 'L', 'U', 'R', 'D2', 'U2', 'U2', "F'"]
 # randm = ['D2', 'F', "R'", "L'", "L'", 'F', "D'", 'L2', 'L2', 'U', 'U2', 'L', 'F2', "D'", 'D2', "D'", 'D', 'U', "L'", 'F', 'D', "D'", 'F', "D'", 'D', "F'", 'D', 'B2', 'D2', 'F2', "F'", "L'", 'U2', 'D', 'F2', 'U', 'F2', 'R', "D'", 'D']
 # randm = ["L'", "R'", 'R', 'F', 'L', 'D', 'F', "F'", "R'", 'R', 'D', 'D', 'D2', "F'", "D'", 'R2', 'U2', 'B', "B'", "U'", 'B2', 'R', 'R2', 'F', 'B', "L'", 'D', "R'", "L'", 'B2', "B'", 'R', 'R2', 'L2', "L'", 'F2', "F'", "U'", 'B2', "B'"]
 # randm = ['R', 'U', 'R', "B'", 'D', "U'", 'R', 'D', "F'", 'B', "U'", 'F2', 'F', "D'", "U'", "B'", 'D2', "L'", 'B2', 'R2', 'R2', 'D', 'F', 'F2', "B'", 'U', "L'", 'U', 'U', 'F', 'B2', 'L', 'R2', 'D', "D'", "D'", "U'", "B'", "D'", 'D2']
