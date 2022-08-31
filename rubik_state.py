@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from random import randint
 import re
 import numpy as np
 import copy
@@ -20,21 +21,26 @@ class RubikState:
     cube_size = 3
     num_cube_faces = 6
     clockwise = (1, 0)
+    solved_properties = {'corner_position': list(range(8)),
+                         'edge_position': list(range(12)),
+                         'corner_orientation': [0] * 8,
+                         'edge_orientation': [0] * 12}
+    solved_faces = 'wwwwwwwwwgggggggggrrrrrrrrrbbbbbbbbboooooooooyyyyyyyyy'
     possible_notations = ('L', 'L2', 'L\'', 'R', 'R2', 'R\'',
                           'F', 'F2', 'F\'', 'B', 'B2', 'B\'',
                           'U', 'U2', 'U\'', 'D', 'D2', 'D\'')
 
     def __init__(self, properties, faces, notation, notation_path):
-        self.properties = copy.deepcopy(properties)
+        self.properties = RubikState.solved_properties if properties is None else copy.deepcopy(properties)
         self.cp = self.properties['corner_position']
         self.ep = self.properties['edge_position']
         self.co = self.properties['corner_orientation']
         self.eo = self.properties['edge_orientation']
 
-        self.faces = faces
+        self.faces = RubikState.solved_faces if faces is None else faces
         self.top, self.left, self.front, \
             self.right, self.back, self.bottom = \
-            [np.array(list(faces[RubikState.cube_size ** 2 * i:RubikState.cube_size ** 2 * (i + 1)]))
+            [np.array(list(self.faces[RubikState.cube_size ** 2 * i:RubikState.cube_size ** 2 * (i + 1)]))
              .reshape(RubikState.cube_size, RubikState.cube_size) for i in range(RubikState.num_cube_faces)]
 
         self.notation = notation
@@ -241,6 +247,14 @@ class RubikState:
                 'orientation': [str_dict['corner_orientation'], str_dict['edge_orientation']]}
         df = pd.DataFrame.from_dict(data, orient='index').rename(columns={0: 'corner', 1: 'edge'})
         return scheme + '\n\n' + self.make_line_state() + '\n\n' + df.to_string()
+
+    @staticmethod
+    def make_random_notations(num):
+        random_notations = list()
+        for _ in range(num):
+            notation = randint(0, 17)
+            random_notations.append(RubikState.possible_notations[notation])
+        return random_notations
 
     @staticmethod
     def calculate_new_co(corner_orientation):

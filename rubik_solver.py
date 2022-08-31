@@ -12,18 +12,13 @@ import re
 import numpy
 import time
 import copy
-import logging
 import timeit
 from rubik_state import RubikState
-from termcolor import colored
 from queue import PriorityQueue
 from typing import Optional, Dict, Any
 import queue
 from random import randint
-
-logging.basicConfig(level=logging.INFO, filename='log.log',
-                    filemode='w', format='%(message)s')
-log = lambda i: logging.info(i)
+from termcolor import colored
 
 gre = lambda i: colored(i, 'green')
 yll = lambda i: colored(i, 'yellow')
@@ -31,7 +26,7 @@ ree = lambda i: colored(i, 'red')
 blu = lambda i: colored(i, 'blue')
 
 
-class Solver:
+class RubikSolver:
     __slots__ = ('rubik_state', 'solution_time')
 
     def __init__(self, shuffled_rubik_state):
@@ -67,10 +62,7 @@ class Solver:
         print('was len', yll(len(self.rubik_state.notation_path)))
         self.reduce_repetitive_notations()
         print('now len', gre(len(self.rubik_state.notation_path)))
-
-
-
-
+        # print(gre(self.rubik_state))
 
     def solve_top_layer_cross(self):
         """
@@ -616,87 +608,11 @@ def make_random_state():
     # need to remove first 15 turns
     return random_list
 
-def reduce_moves(lst):
-    new_path = []
-    print(yll(len(lst)))
-    for i in lst:
-        if len(i) == 1:
-            new_path.append(i)
-        elif '2' in i:
-            [new_path.append(i[0]) for _ in range(2)]
-        else:  # elif '\'' in i:
-            [new_path.append(i[0]) for _ in range(3)]
-            # new_path.append(i)
-            # new_path.append(i)
 
-    print(ree(len(new_path)))
-    s = ''.join(new_path)
-    new_path.clear()
-    grouped = [k + str(len(list(v))) for k, v in groupby(s)]
-    # print(grouped)
-    # print(len(grouped))
-    # grouped = ['B2', 'B3', 'B4', 'B5', 'B1', 'B10', 'B2']
-    print(grouped)
-    # for move in grouped:
-    #     notation, num_turns = move[0], int(move[1:])
-    #
-    #     num_turns = num_turns % 4
-    #     if not num_turns:
-    #         continue
-    #
-    #     num_turns = num_turns % 3
-    #     if not num_turns:
-    #         new_path.append(f'{notation}\'')
-    #         continue
-    #
-    #     num_turns = num_turns % 2
-    #     if not num_turns:
-    #         new_path.append(f'{notation}2')
-    #         continue
-    #     new_path.append(f'{notation}')
-
-    # print(gre(new_path))
-    # print(gre(len(new_path)))
-
-# test = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2',
-#         'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'",
-#         "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'",
-#         'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'",
-#         'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'",
-#         "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'",
-#         'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'",
-#         'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L',
-#         "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F',
-#         "D'", "F'", 'D']
-# reduce_moves(test)
-# exit()
-# start test from here
-test = tests.clear_state
-# test = tests.test6
-
-kek = RubikState(test['cepo'], test['faces'], None, None)
-randm = make_random_state()
-# randm = ['U2', "U'", "R'", 'U2', "B'", 'F', 'U', 'L2', 'D2', 'F', 'B', 'L2', "B'", "F'", 'R', "L'", 'L', 'F', 'L', 'U2', "L'", "L'", 'B', "D'", 'D', 'F2', "R'", 'B2', 'U', 'B', 'D2', 'D', "F'", 'L', 'U', 'R', 'D2', 'U2', 'U2', "F'"]
-# randm = ['D2', 'F', "R'", "L'", "L'", 'F', "D'", 'L2', 'L2', 'U', 'U2', 'L', 'F2', "D'", 'D2', "D'", 'D', 'U', "L'", 'F', 'D', "D'", 'F', "D'", 'D', "F'", 'D', 'B2', 'D2', 'F2', "F'", "L'", 'U2', 'D', 'F2', 'U', 'F2', 'R', "D'", 'D']
-# randm = ["L'", "R'", 'R', 'F', 'L', 'D', 'F', "F'", "R'", 'R', 'D', 'D', 'D2', "F'", "D'", 'R2', 'U2', 'B', "B'", "U'", 'B2', 'R', 'R2', 'F', 'B', "L'", 'D', "R'", "L'", 'B2', "B'", 'R', 'R2', 'L2', "L'", 'F2', "F'", "U'", 'B2', "B'"]
-# randm = ['R', 'U', 'R', "B'", 'D', "U'", 'R', 'D', "F'", 'B', "U'", 'F2', 'F', "D'", "U'", "B'", 'D2', "L'", 'B2', 'R2', 'R2', 'D', 'F', 'F2', "B'", 'U', "L'", 'U', 'U', 'F', 'B2', 'L', 'R2', 'D', "D'", "D'", "U'", "B'", "D'", 'D2']
-# randm = ['F', "L'", 'L2', 'B', "D'", 'U', "U'", "D'", 'D2', "F'", "R'", 'U2', "L'", 'L2', 'D2', "U'", 'R', 'B2', 'R', "B'", 'F', "R'", 'F', 'R', 'U', "B'", 'U2', "B'", 'R2', "F'", "U'", "R'", 'D2', "B'", "R'", "U'", 'B', "B'", "L'", "B'"]
-# randm = ['F', "B'", "B'", 'F2', "D'", 'U2', 'F2', 'F', "F'", 'B', 'U', 'B', 'L', "B'", 'U2', 'D', 'U2', "F'", 'F', 'U', "L'", 'B', 'R', 'L', "F'", 'B2', 'R', 'D', "L'", 'B2', 'L2', 'R', "U'", "B'", "B'", "B'", 'F2', 'U', 'F', 'U2']
-# randm = ['F', 'B', "U'", "B'", 'F2', "U'", 'F', 'D2', "D'", 'U', "U'", 'B', 'B', "F'", 'L', 'U', 'B2', "U'", "U'", 'D', 'L', "L'", 'U', 'U2', 'R', 'B2', 'U2', 'L', 'D', "D'", 'F2', 'B', 'L', 'D', "F'", 'U2', "F'", "D'", 'F2', 'R']
-# randm = ['L', 'R', "B'", "F'", 'R2', "D'", 'D', 'F', 'D2', "B'", 'U', 'B2', "B'", 'B2', 'L', "F'", 'L2', 'D', 'R', "F'", "F'", "D'", 'F', 'D']
-# randm = ["U'", 'F2', 'D', 'L', "D'", 'D2', "B'", "R'", "D'", "B'", "L'", 'U', 'L2', "B'", 'B', "R'", "D'", 'F', 'R', 'F', "L'"]
-# randm = ["U'", 'D', 'D', 'R2', "U'", "U'", 'D', "D'", 'B2', "L'", 'U', 'D', "B'", 'R', 'F2', 'U2', 'L2', 'D2', 'B2', 'F']
-# randm = ['R2', "R'", 'D2', 'R2', 'D2', 'F', 'R2', "U'", 'L', 'F2', 'U', "L'", 'R', 'R', "D'", 'L2', "F'", 'R', 'D', 'R2', 'B2', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", "B'", 'D', 'B', 'D', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D2', 'R', 'D', "R'", "D'", 'R', 'D', 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", 'B', "D'", "B'", 'L', "B'", "L'", 'B', "D'", "D'", "B'", 'D', 'B', 'D', 'R', "D'", "R'", 'D', 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
-# randm = ['R2', 'D', "F'", 'U', 'F2', 'U2', 'U', 'L', "U'", 'D2', 'U2', 'B2', "B'", "D'", "L'", 'F2', 'R2', 'F', 'D', "R'", 'B2', "L'", 'D2', 'L', 'D', "L'", "D'", 'L', 'R', 'D', "R'", "D'", 'R', 'D', "R'", "D'", "R'", 'D', 'R', 'D', "R'", "D'", 'R', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'F', "D'", "F'", 'R', "F'", "R'", 'F', "D'", 'D', 'D', 'D', 'B', 'D', 'R', "D'", "R'", "B'"]
-# randm = ['U', "D'", 'B', 'U', "L'", 'F2', "D'", 'L', "B'", 'D2', 'D2', 'U', "R'", 'B2', 'R2', "F'", 'B', 'R', "D'", "F'", 'R', "L'", 'L', 'D', "L'"]
-# randm = ["B'", 'U', 'D2', 'L2', "D'", "F'", 'F2', "F'", 'F2', 'L2', 'D2', 'R', 'U', "R'", "R'", 'R', 'F2', "L'", "D'", 'B', 'R2', "B'", "D'", 'B', 'D', "B'", "D'", 'B', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "L'", 'D', 'L', 'D', "R'", 'D2', 'R', 'D', "R'", "D'", 'R', "L'", 'D', 'L', 'D', "F'", 'D2', 'F', 'D', "F'", "D'", 'F', "L'", 'D', 'L', 'D', 'B', 'D', "B'", "D'", 'B', 'D', "B'", "D'", 'D', 'D', 'D', "D'", "L'", 'D', 'L', 'D', 'B', "D'", "B'", 'D', 'R', "D'", "R'", "D'", "B'", 'D', 'B', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", 'R', "D'", "R'", 'B', "R'", "B'", 'R', "D'", "D'", "F'", 'D', 'F', 'D', 'L', "D'", "L'", 'D', 'D', "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", "D'", "R'", 'D', 'R', 'D', 'F', "D'", "F'", 'D']
-print(randm)
-kek.make_move(randm)
-# kek.moves(["D'", 'U', 'B', 'D2', 'D2', "D'", "L'", "R'", "L'", 'L2', "D'", 'L', "B'", "U'", 'F2', 'L', 'F', "D'", "L'", 'F', 'B2'])
-# print(kek)
-# exit()
-
-solv = Solver(kek)
-# print(kek)
-print(gre(solv.rubik_state))
-# if d2 and d2 - del all in history
+# test = tests.clear_state
+#
+# kek = RubikState(test['cepo'], test['faces'], None, notation_path=None)
+# randm = make_random_state()
+# kek.make_move(randm)
+# solv = RubikSolver(kek)
+# print(gre(solv.rubik_state))
