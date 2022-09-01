@@ -16,35 +16,45 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='solving a rubik\'s cube according to '
                     'the provided notations for shuffling')
-    parser.add_argument('moves', type=str, help='notations for shuffling')  # re notations
-    parser.add_argument('-s', '--shuffle', required=False,
-                        type=int, help='set number of shuffles')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('notations', nargs='?', type=str,
+                       help='notations for shuffling.')
+    group.add_argument('-s', '--shuffle', required=False,
+                       type=int, help='set number of shuffles')
     parser.add_argument('-v', '--verbose', action='store_true',
                         required=False, help='show solution details')
     parser.add_argument('-vis', '--visualize', action='store_true',
-                        required=False, help='visualize кubik\'s solution')
+                        required=False, help='visualize rubik\'s solution')
     args = parser.parse_args()
 
-    print('args.moves =', args.moves)
+    print('args.moves =', args.notations)  # to del
     print('args.shuffle =', args.shuffle)
     print('args.verbose =', args.verbose)
     print('args.visualize =', args.visualize)
 
-    # if random -> cant be moves
+    # make verbose and vis in group
 
-    notations = args.moves.split()
-    if not all(nt in RubikState.possible_notations for nt in set(notations)):
-        sys.exit(f"possible notations: {' '.join([i for i in RubikState.possible_notations])}")
+    # if args.notations and args.shuffle:
+    #     parser.error('need to choose between given notations and randomly generated ones')
+    # elif not args.notations and not args.shuffle:
+    #     parser.error('need to choose something between given notations and randomly generated ones')
+    if args.shuffle and args.shuffle < 1:
+        parser.error('need to specify the number of times to shuffle')
 
-    if args.shuffle: # ant chech < 0 or == 0 # try with 0
-        random_notations = RubikState.make_random_notations(args.shuffle)
+    if args.notations:
+        notations = args.notations.split()
+        if not all(nt in RubikState.possible_notations for nt in set(notations)):
+            parser.error(f"possible notations: {' '.join([i for i in RubikState.possible_notations])}")
+    else:
+        notations = RubikState.make_random_notations(args.shuffle)
 
-    print(random_notations) # check if all notations get in random state
-    exit()
+    # print(random_notations) # check if all notations get in random state
+    # exit()
 
     shuffled_rubik = RubikState(None, None, notations, None)
     shuffled_rubik.notation_path = list()
-    solved_rubik = RubikSolver(shuffled_rubik)# .get sol_solution
+    # if not vis -> print verbose
+    solved_rubik = RubikSolver(shuffled_rubik).rubik_state
 
     from termcolor import colored
     gre = lambda i: colored(i, 'green')
