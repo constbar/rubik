@@ -2,11 +2,13 @@
 import sys
 import argparse
 
-# make flag verbose for timing / visual and smth
-
 # $>./rubik "F R U2 B' L' D'" | cat -e
 # $> ./rubik "F R U2 B' L' D'" | wc -w
-#
+
+
+from termcolor import colored
+gre = lambda i: colored(i, 'green')   # del this block
+yll = lambda i: colored(i, 'yellow')
 
 from rubik_state import RubikState
 from rubik_solver import RubikSolver
@@ -23,40 +25,41 @@ if __name__ == '__main__':
                           type=int, help='set number of shuffles')
     optional = parser.add_mutually_exclusive_group()
     optional.add_argument('-v', '--verbose', action='store_true',
-                          required=False, help='show solution details')
+                          required=False, help='show solution time')
     optional.add_argument('-vis', '--visualize', action='store_true',
                           required=False, help='visualize rubik\'s solution')
     args = parser.parse_args()
-
+    """
     print('args.moves =', args.notations)  # to del all block
     print('args.shuffle =', args.shuffle)
     print('args.verbose =', args.verbose)
     print('args.visualize =', args.visualize)
-
+    """
     if args.shuffle and args.shuffle < 1:
         parser.error('need to specify the number of times to shuffle')
 
     if args.notations:
-        notations = args.notations.split()
-        if not all(nt in RubikState.possible_notations for nt in set(notations)):
+        shuffled_notations = args.notations.split()
+        if not all(nt in RubikState.possible_notations for nt in set(shuffled_notations)):
             parser.error(f"possible notations: {' '.join([i for i in RubikState.possible_notations])}")
     else:
-        notations = RubikState.make_random_notations(args.shuffle)
+        shuffled_notations = RubikState.make_random_notations(args.shuffle)
 
-    shuffled_rubik = RubikState(None, None, notations, None)
-    shuffled_rubik.notation_path = list()
-    solved_rubik = RubikSolver(shuffled_rubik).rubik_state
+    shuffled_rubik_state = RubikState(None, None, shuffled_notations, None)
+    shuffled_rubik_state.notation_path = list()
+    solver = RubikSolver(shuffled_rubik_state)
+    solved_rubik_state = solver.rubik_state
 
+    print_solution = lambda: colored(' '.join([i for i in solved_rubik_state.notation_path]), 'green')
     if args.visualize:
+        # gets shuflled notations and then notations to solve # make this!!!
         print('make visualization and exit')
-
-    print('all turns')
+    elif args.shuffle:
+        print('notations for cube shuffling:', colored(' '.join([i for i in shuffled_notations]), 'yellow'))
+        print('notations for solving the cube:', print_solution())
+    else:
+        print(print_solution())
 
     if args.verbose:
-        print('time - maybe steps')
-
-    from termcolor import colored
-    gre = lambda i: colored(i, 'green')
-    yll = lambda i: colored(i, 'yellow')
-    print(yll(shuffled_rubik))
-    print(gre(solved_rubik))
+        print('number of moves to solve:', colored(str(len(solved_rubik_state.notation_path)), 'green'), 'moves')
+        print('rubik\'s solution time:', colored(round(solver.solution_time, 3), 'green'), 'secs')
