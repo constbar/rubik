@@ -1,10 +1,7 @@
-import ursina as urs
-import time
 import itertools
 import sys
 
-# todo:
-#   rotate colors in cube
+import ursina as urs
 
 
 class Cubie(urs.Entity):
@@ -15,7 +12,7 @@ class Cubie(urs.Entity):
         self.position = coord
 
 
-class RubikVisualizer(urs.Ursina):  # re vis
+class RubikVisualizer(urs.Ursina):
     notations = {'L': ('x', -1, -90), 'L2': ('x', -1, -180), 'L\'': ('x', -1, 90), 'L2\'': ('x', -1, 180),
                  'R': ('x', 1, 90), 'R2': ('x', 1, 180), 'R\'': ('x', 1, -90), 'R2\'': ('x', 1, -180),
                  'F': ('z', -1, 90), 'F2': ('z', -1, 180), 'F\'': ('z', -1, -90), 'F2\'': ('z', -1, -180),
