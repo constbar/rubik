@@ -1,19 +1,16 @@
 #!/usr/bin/python3
-import sys
 import argparse
+
+from termcolor import colored
+
 from rubik_ursina import RubikVisualizer
 
 # $>./rubik "F R U2 B' L' D'" | cat -e
 # $> ./rubik "F R U2 B' L' D'" | wc -w
 
 
-from termcolor import colored
-gre = lambda i: colored(i, 'green')   # del this block
-yll = lambda i: colored(i, 'yellow')
-
 from rubik_state import RubikState
 from rubik_solver import RubikSolver
-# split by tabs spaces and other
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -30,12 +27,7 @@ if __name__ == '__main__':
     optional.add_argument('-vis', '--visualize', action='store_true',
                           required=False, help='visualize rubik\'s solution')
     args = parser.parse_args()
-    """
-    print('args.moves =', args.notations)  # to del all block
-    print('args.shuffle =', args.shuffle)
-    print('args.verbose =', args.verbose)
-    print('args.visualize =', args.visualize)
-    """
+
     if args.shuffle and args.shuffle < 1:
         parser.error('need to specify the number of times to shuffle')
 
@@ -51,18 +43,16 @@ if __name__ == '__main__':
     solver = RubikSolver(shuffled_rubik_state)
     solved_rubik_state = solver.rubik_state
 
-    print_solution = lambda: colored(' '.join([i for i in solved_rubik_state.notation_path]), 'green')
+    make_green_solution = lambda: colored(' '.join([i for i in solved_rubik_state.notation_path]), 'green')
     if args.visualize:
         rubik_visualizer = RubikVisualizer(shuffled_notations, solved_rubik_state.notation_path)
         rubik_visualizer.run()
-        sys.exit()
 
     elif args.shuffle:
         print('notations for cube shuffling:', colored(' '.join([i for i in shuffled_notations]), 'yellow'))
-        print('notations for solving the cube:', print_solution())
+        print('notations for solving the cube:', make_green_solution())
     else:
-        print(gre(solved_rubik_state.notation_path)) # del !
-        print(print_solution())
+        print(make_green_solution())
 
     if args.verbose:
         print('number of moves to solve:', colored(str(len(solved_rubik_state.notation_path)), 'green'), 'moves')
