@@ -13,64 +13,7 @@ yll = lambda i: colored(i, 'yellow')
 #   rotate colors in cube
 #   del all ursina text in terminal
 #   ubrat' fps number in window
-
-globvar = True
-
-def rotate(axis, layer):
-    global globvar
-    globvar = False
-
-    for cubie in cubies:
-        cubie.position, cubie.rotation = round(cubie.world_position, 1), cubie.world_rotation  # +\n
-        cubie.parent = urs.scene
-
-    center.rotation = 0
-
-    for cubie in cubies:
-        if eval(f'cubie.{axis}') == layer:
-            cubie.parent = center
-
-
-def toggle_animation_trigger():
-    global globvar
-    globvar = not globvar
-
-
-def input(key):
-    # maybe space for shufling
-    # if key in rotations:
-
-    global globvar
-
-    # if key == 'space' or key in rotations:
-    #     print('123')
-    #     for i in ['R', 'L', 'R', 'L', 'R', 'L', 'R', 'L', 'R', 'L']:
-    #         input(i)
-    # else:
-    #     return
-
-    # if key not in rotations:
-    if key in rotations and globvar:
-        pass
-    # if globvar:
-    #     pass
-    else:
-        return
-
-    axis, layer, rotation_degree = rotations[key]
-    # axis, layer, rotation_degree = ROT[key]
-    # print('axis, layer, rotation_degree =', axis, layer, rotation_degree)
-    shift = urs.held_keys['shift']
-
-    rotate(axis, layer)
-
-    rotation_degree = rotation_degree if not shift else -rotation_degree
-    # eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.5)')
-    eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
-
-    # if globvar:
-    urs.invoke(toggle_animation_trigger, delay=.15)
-    # urs.invoke(toggle_animation_trigger, delay=.5 + .11)
+#   if key == 'escape':
 
 
 class Cubie(urs.Entity):
@@ -79,70 +22,91 @@ class Cubie(urs.Entity):
         self.model = 'kek2.obj'
         self.scale = .5
         self.position = coord
-        # self.i = 1 if coord == (1, 1, 1) else 0 # center poistion
 
-        # if self.y == 0:
-        #     self.color = urs.color.black
-        # if pos == (-1, -1, -1):
-        # if pos == (1, 1, 1):Q
-        #     self.color = urs.color.black
 
-        # self.target position
-        # self.real position
+class Rubik(urs.Ursina):  # re vis
+    ROT = {
+        'U': ('y', 1, 90), 'd': ('y', -1, -90),
+        'r': ('x', 1, 90), 'L': ('x', -1, -90),
+        'f': ('z', -1, 90), 'B': ('z', 1, -90)}
+
+    rotations = {'u': ('y', 1, 90), 'd': ('y', -1, -90),
+                 'r': ('x', 1, 90), 'l': ('x', -1, -90),
+                 'f': ('z', -1, 90), 'b': ('z', 1, -90)}
+
+    def __init__(self):
+        super().__init__()
+        urs.EditorCamera()
+        self.center = urs.Entity()
+
+        self.cubies = list()
+        self.action = True
+
+        for coordinates in itertools.product((-1, 0, 1), repeat=3):
+            self.cubies.append(Cubie(coordinates))
+
+
+    def toggle_animation_trigger(self):  # re
+        self.action = not self.action
+
+    def rotate(self, axis, layer):
+        self.action = False
+
+        for cubie in self.cubies:
+            cubie.position, cubie.rotation = round(cubie.world_position, 1), cubie.world_rotation  # +\n
+            cubie.parent = urs.scene
+
+        self.center.rotation = 0
+
+        for cubie in self.cubies:
+            if eval(f'cubie.{axis}') == layer:
+                cubie.parent = self.center
+
+    def input(self, key):
+        super().input(key)
+        # maybe space for shufling
+        # if key in rotations:
+
+        if key in Rubik.rotations and self.action:
+            pass
+        else:
+            return
+        # if key in Rubik.rotations and self.action:
+        #     pass
+        # else:
+
+        # axis, layer, rotation_degree = Rubik.rotations[key]
+        axis, layer, rotation_degree = Rubik.ROT[key]
+
+        self.rotate(axis, layer)
+
+        # eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.5)')
+        eval(f'self.center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
+
+        # if globvar:
+        urs.invoke(self.toggle_animation_trigger, delay=.15)
+        # urs.invoke(toggle_animation_trigger, delay=.5 + .11)
+
+
+
 
 if __name__ == '__main__':
 
-    # print(globvar)
-    # toggle_animation_trigger()
-    # print(globvar)
-    # /exit()
+    rubik = Rubik()
+    rubik.run()
 
-    rotations = {
-        'u': ('y', 1, 90), 'd': ('y', -1, -90),
-        'r': ('x', 1, 90), 'l': ('x', -1, -90),
-        'f': ('z', -1, 90), 'b': ('z', 1, -90)
-    }
-    ROT = {
-        'U': ('y', 1, 90), 'd': ('y', -1, -90),
-        'R': ('x', 1, 90), 'L': ('x', -1, -90),
-        'f': ('z', -1, 90), 'B': ('z', 1, -90)
-    }
-
-    app = urs.Ursina()
-    urs.EditorCamera()
-    center = urs.Entity()
-    # print(gre(center))
-    # print(gre(center.rotation))
-
-    cubies = list()
-    for coordinates in itertools.product((-1, 0, 1), repeat=3):
-        cubies.append(Cubie(coordinates))
-
-    # urs.camera.position = (1, 1, 10) 0 0 10
-
-
-
-    # if key == 'space' or key in rotations:
-    #     print('123')
-    #     for i in ['R', 'L', 'R', 'L', 'R', 'L', 'R', 'L', 'R', 'L']:
-    #         input(i)
-    # else:
-    #     return
-
-    # if key not in rotations:
-    app.run()
-
-    if globvar:
-        for key in ['R', 'L', 'R', 'L', 'R', 'L', 'R', 'L', 'R', 'L']:
-            axis, layer, rotation_degree = ROT[key]
-            shift = urs.held_keys['shift']
-
-            rotate(axis, layer)
-
-            rotation_degree = rotation_degree if not shift else -rotation_degree
-            # eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.5)')
-            eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
-
-            # if globvar:
-            urs.invoke(toggle_animation_trigger, delay=.15)
+    exit()
+    # if globvar:
+    #     for key in ['R', 'L', 'R', 'L', 'R', 'L', 'R', 'L', 'R', 'L']:
+    #         axis, layer, rotation_degree = ROT[key]
+    #         shift = urs.held_keys['shift']
+    #
+    #         rotate(axis, layer)
+    #
+    #         rotation_degree = rotation_degree if not shift else -rotation_degree
+    #         # eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.5)')
+    #         eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
+    #
+    #         # if globvar:
+    #         urs.invoke(toggle_animation_trigger, delay=.15)
 
