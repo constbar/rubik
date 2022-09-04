@@ -1,19 +1,10 @@
 import ursina as urs
 import time
 import itertools
-
-from termcolor import colored
-gre = lambda i: colored(i, 'green')   # del this block
-yll = lambda i: colored(i, 'yellow')
+import sys
 
 # todo:
-#   make center of cube in center should be rounding via center
-#   make switch case
-#   make annotations
 #   rotate colors in cube
-#   del all ursina text in terminal
-#   ubrat' fps number in window
-#   if key == 'escape':
 
 
 class Cubie(urs.Entity):
@@ -24,89 +15,80 @@ class Cubie(urs.Entity):
         self.position = coord
 
 
-class Rubik(urs.Ursina):  # re vis
-    ROT = {
-        'U': ('y', 1, 90), 'd': ('y', -1, -90),
-        'r': ('x', 1, 90), 'L': ('x', -1, -90),
-        'f': ('z', -1, 90), 'B': ('z', 1, -90)}
+class RubikVisualizer(urs.Ursina):  # re vis
+    notations = {'L': ('x', -1, -90), 'L2': ('x', -1, -180), 'L\'': ('x', -1, 90), 'L2\'': ('x', -1, 180),
+                 'R': ('x', 1, 90), 'R2': ('x', 1, 180), 'R\'': ('x', 1, -90), 'R2\'': ('x', 1, -180),
+                 'F': ('z', -1, 90), 'F2': ('z', -1, 180), 'F\'': ('z', -1, -90), 'F2\'': ('z', -1, -180),
+                 'B': ('z', 1, -90), 'B2': ('z', 1, -180), 'B\'': ('z', 1, 90), 'B2\'': ('z', 1, 180),
+                 'U': ('y', 1, 90), 'U2': ('y', 1, 180), 'U\'': ('y', 1, -90), 'U2\'': ('y', 1, -180),
+                 'D': ('y', -1, -90), 'D2': ('y', -1, -180), 'D\'': ('y', -1, 90), 'D2\'': ('y', -1, 180)}
 
-    rotations = {'u': ('y', 1, 90), 'd': ('y', -1, -90),
-                 'r': ('x', 1, 90), 'l': ('x', -1, -90),
-                 'f': ('z', -1, 90), 'b': ('z', 1, -90)}
-
-    def __init__(self):
+    def __init__(self, shuffled_notations, solution_notations):
         super().__init__()
         urs.EditorCamera()
-        self.center = urs.Entity()
+        urs.window.borderless = False
+        urs.window.exit_button.visible = False
+        urs.window.fps_counter.enabled = False
 
+        self.shuffled_notations = shuffled_notations
+        self.solution_notations = solution_notations
+        self.center = urs.Entity()
         self.cubies = list()
         self.action = True
+        self.notation_index = 0
 
+        self.init_cubies()
+        self.make_shuffled_cube()
+
+    def init_cubies(self):
         for coordinates in itertools.product((-1, 0, 1), repeat=3):
             self.cubies.append(Cubie(coordinates))
 
+    def make_shuffled_cube(self):
+        for notation in self.shuffled_notations:
+            self.rotate_side_without_animation(notation)
 
-    def toggle_animation_trigger(self):  # re
-        self.action = not self.action
-
-    def rotate(self, axis, layer):
-        self.action = False
-
+    def rotate_cubie_positions(self, notation):
+        axis, layer, rotation_degree = RubikVisualizer.notations[notation]
         for cubie in self.cubies:
-            cubie.position, cubie.rotation = round(cubie.world_position, 1), cubie.world_rotation  # +\n
+            cubie.position, cubie.rotation = round(cubie.world_position, 1), cubie.world_rotation
             cubie.parent = urs.scene
-
         self.center.rotation = 0
 
         for cubie in self.cubies:
             if eval(f'cubie.{axis}') == layer:
                 cubie.parent = self.center
+        return axis, rotation_degree
+
+    def rotate_side_without_animation(self, notation):
+        axis, rotation_degree = self.rotate_cubie_positions(notation)
+        exec(f'self.center.rotation_{axis} = {rotation_degree}')
+
+    def toggle_animation_trigger(self):
+        self.action = not self.action
+
+    def rotate_side_with_animation(self, notation):
+        self.action = False
+        axis, rotation_degree = self.rotate_cubie_positions(notation)
+        eval(f'self.center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
+        urs.invoke(self.toggle_animation_trigger, delay=.25)
 
     def input(self, key):
         super().input(key)
-        # maybe space for shufling
-        # if key in rotations:
-
-        if key in Rubik.rotations and self.action:
-            pass
-        else:
-            return
-        # if key in Rubik.rotations and self.action:
-        #     pass
-        # else:
-
-        # axis, layer, rotation_degree = Rubik.rotations[key]
-        axis, layer, rotation_degree = Rubik.ROT[key]
-
-        self.rotate(axis, layer)
-
-        # eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.5)')
-        eval(f'self.center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
-
-        # if globvar:
-        urs.invoke(self.toggle_animation_trigger, delay=.15)
-        # urs.invoke(toggle_animation_trigger, delay=.5 + .11)
-
-
-
-
-if __name__ == '__main__':
-
-    rubik = Rubik()
-    rubik.run()
-
-    exit()
-    # if globvar:
-    #     for key in ['R', 'L', 'R', 'L', 'R', 'L', 'R', 'L', 'R', 'L']:
-    #         axis, layer, rotation_degree = ROT[key]
-    #         shift = urs.held_keys['shift']
-    #
-    #         rotate(axis, layer)
-    #
-    #         rotation_degree = rotation_degree if not shift else -rotation_degree
-    #         # eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.5)')
-    #         eval(f'center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
-    #
-    #         # if globvar:
-    #         urs.invoke(toggle_animation_trigger, delay=.15)
-
+        if urs.held_keys['space'] and self.action or urs.held_keys['right arrow'] and self.action:
+            if self.notation_index < len(self.solution_notations):
+                notation_text = urs.Text(text=f'{self.solution_notations[self.notation_index]}',
+                                         scale=3, x=.3, y=.3, color=urs.color.white)
+                urs.destroy(notation_text, .2)
+                self.rotate_side_with_animation(self.solution_notations[self.notation_index])
+                self.notation_index += 1
+        elif urs.held_keys['left arrow'] and self.action:
+            if self.notation_index > 0:
+                self.notation_index -= 1
+                if len(self.solution_notations[self.notation_index]) == 1 or \
+                        '2' in self.solution_notations[self.notation_index]:
+                    self.rotate_side_with_animation(self.solution_notations[self.notation_index] + '\'')
+                else:
+                    self.rotate_side_with_animation(self.solution_notations[self.notation_index].strip('\''))
+        elif key == 'escape':
+            sys.exit()

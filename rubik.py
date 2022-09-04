@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sys
 import argparse
+from rubik_ursina import RubikVisualizer
 
 # $>./rubik "F R U2 B' L' D'" | cat -e
 # $> ./rubik "F R U2 B' L' D'" | wc -w
@@ -52,12 +53,15 @@ if __name__ == '__main__':
 
     print_solution = lambda: colored(' '.join([i for i in solved_rubik_state.notation_path]), 'green')
     if args.visualize:
-        # gets shuflled notations and then notations to solve # make this!!!
-        print('make visualization and exit')
+        rubik_visualizer = RubikVisualizer(shuffled_notations, solved_rubik_state.notation_path)
+        rubik_visualizer.run()
+        sys.exit()
+
     elif args.shuffle:
         print('notations for cube shuffling:', colored(' '.join([i for i in shuffled_notations]), 'yellow'))
         print('notations for solving the cube:', print_solution())
     else:
+        print(gre(solved_rubik_state.notation_path)) # del !
         print(print_solution())
 
     if args.verbose:
