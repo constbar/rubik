@@ -3,11 +3,9 @@ import argparse
 
 from termcolor import colored
 
-from rubik_ursina import RubikVisualizer
-
-
-from rubik_state import RubikState
 from rubik_solver import RubikSolver
+from rubik_state import RubikState
+from rubik_ursina import RubikVisualizer
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
