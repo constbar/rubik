@@ -1,23 +1,17 @@
 from __future__ import annotations
 
-from random import randint
-import re
-import numpy as np
 import copy
-from termcolor import colored
-from itertools import repeat
-from typing import Final
-import operator
-import pandas as pd
+import re
+from random import randint
 
-gre = lambda i: colored(i, 'green')
-yll = lambda i: colored(i, 'yellow')
+import numpy as np
+import pandas as pd
 
 
 class RubikState:
     __slots__ = ('properties', 'cp', 'ep', 'co', 'eo',
                  'faces', 'top', 'left', 'front', 'right',
-                 'back', 'bottom',  'notation', 'notation_path')
+                 'back', 'bottom', 'notation', 'notation_path')
     cube_size = 3
     num_cube_faces = 6
     clockwise = (1, 0)
@@ -57,6 +51,7 @@ class RubikState:
         in the first block, the first line is for positions, the second line is for orientations
         in the second block, the movements occur according to faclet-colors
         """
+
         def l_clockwise():
             self.cp[0], self.cp[4], self.cp[1], self.cp[5] = \
                 self.cp[5], self.cp[0], self.cp[4], self.cp[1]
@@ -237,10 +232,9 @@ class RubikState:
             final_str = re.sub(r'[\[\]\']', '', final_str)
             return final_str
 
-        empty_np = np.full((3, 3), ' ')
+        empty_np = np.full((RubikState.cube_size, RubikState.cube_size), ' ')
         scheme = sum_lines_np(self.left, self.front, self.right, self.back)
-        scheme = sum_lines_np(empty_np, self.top) + '\n' + \
-            scheme + sum_lines_np(empty_np, self.bottom)
+        scheme = sum_lines_np(empty_np, self.top) + '\n' + scheme + sum_lines_np(empty_np, self.bottom)
 
         str_dict = {k: ' '.join(map(str, v)) for k, v in self.properties.items()}
         data = {'position': [str_dict['corner_position'], str_dict['edge_position']],

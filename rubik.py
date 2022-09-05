@@ -5,9 +5,6 @@ from termcolor import colored
 
 from rubik_ursina import RubikVisualizer
 
-# $>./rubik "F R U2 B' L' D'" | cat -e
-# $> ./rubik "F R U2 B' L' D'" | wc -w
-
 
 from rubik_state import RubikState
 from rubik_solver import RubikSolver

@@ -11,12 +11,6 @@ from queue import PriorityQueue
 from typing import Optional, Dict, Any
 import queue
 from random import randint
-from termcolor import colored
-
-gre = lambda i: colored(i, 'green')
-yll = lambda i: colored(i, 'yellow')
-ree = lambda i: colored(i, 'red')
-blu = lambda i: colored(i, 'blue')
 
 
 class RubikSolver:
