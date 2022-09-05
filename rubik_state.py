@@ -49,7 +49,7 @@ class RubikState:
         in the first block of each notation, all permutations of cubies are made according
         to changes in positions and orientations.
         in the first block, the first line is for positions, the second line is for orientations
-        in the second block, the movements occur according to faclet-colors
+        in the second block, the movements occur according to facelet-colors
         """
 
         def l_clockwise():

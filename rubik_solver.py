@@ -1,16 +1,9 @@
-from itertools import groupby
-
-import os
-import re
-import numpy
-import time
 import copy
 import timeit
-from rubik_state import RubikState
+from itertools import groupby
 from queue import PriorityQueue
-from typing import Optional, Dict, Any
-import queue
-from random import randint
+
+from rubik_state import RubikState
 
 
 class RubikSolver:
