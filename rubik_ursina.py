@@ -7,7 +7,7 @@ import ursina as urs
 class Cubie(urs.Entity):
     def __init__(self, coord):
         super().__init__()
-        self.model = 'kek2.obj'
+        self.model = 'cubie.obj'
         self.scale = .5
         self.position = coord
 
@@ -68,7 +68,7 @@ class RubikVisualizer(urs.Ursina):
         self.action = False
         axis, rotation_degree = self.rotate_cubie_positions(notation)
         eval(f'self.center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
-        urs.invoke(self.toggle_animation_trigger, delay=.25)
+        urs.invoke(self.toggle_animation_trigger, delay=.35)
 
     def input(self, key):
         super().input(key)
@@ -76,7 +76,7 @@ class RubikVisualizer(urs.Ursina):
             if self.notation_index < len(self.solution_notations):
                 notation_text = urs.Text(text=f'{self.solution_notations[self.notation_index]}',
                                          scale=3, x=.3, y=.3, color=urs.color.white)
-                urs.destroy(notation_text, .2)
+                urs.destroy(notation_text, .3)
                 self.rotate_side_with_animation(self.solution_notations[self.notation_index])
                 self.notation_index += 1
         elif urs.held_keys['left arrow'] and self.action:
