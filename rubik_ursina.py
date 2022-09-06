@@ -1,15 +1,16 @@
 import itertools
 import sys
+from typing import List, Tuple
 
 import ursina as urs
 
 
 class Cubie(urs.Entity):
-    def __init__(self, coord):
+    def __init__(self, coord: Tuple[int, ...]):
         super().__init__()
         self.model = 'cubie.obj'
-        self.scale = .5
         self.position = coord
+        self.scale = .5
 
 
 class RubikVisualizer(urs.Ursina):
@@ -20,7 +21,7 @@ class RubikVisualizer(urs.Ursina):
                  'U': ('y', 1, 90), 'U2': ('y', 1, 180), 'U\'': ('y', 1, -90), 'U2\'': ('y', 1, -180),
                  'D': ('y', -1, -90), 'D2': ('y', -1, -180), 'D\'': ('y', -1, 90), 'D2\'': ('y', -1, 180)}
 
-    def __init__(self, shuffled_notations, solution_notations):
+    def __init__(self, shuffled_notations: List[str], solution_notations: List[str]):
         super().__init__()
         urs.EditorCamera()
         urs.window.borderless = False
@@ -29,23 +30,23 @@ class RubikVisualizer(urs.Ursina):
 
         self.shuffled_notations = shuffled_notations
         self.solution_notations = solution_notations
+        self.cubies: List[Cubie] = list()
         self.center = urs.Entity()
-        self.cubies = list()
-        self.action = True
         self.notation_index = 0
+        self.action = True
 
         self.init_cubies()
         self.make_shuffled_cube()
 
-    def init_cubies(self):
+    def init_cubies(self) -> None:
         for coordinates in itertools.product((-1, 0, 1), repeat=3):
             self.cubies.append(Cubie(coordinates))
 
-    def make_shuffled_cube(self):
+    def make_shuffled_cube(self) -> None:
         for notation in self.shuffled_notations:
             self.rotate_side_without_animation(notation)
 
-    def rotate_cubie_positions(self, notation):
+    def rotate_cubie_positions(self, notation: str) -> Tuple[str, int]:
         axis, layer, rotation_degree = RubikVisualizer.notations[notation]
         for cubie in self.cubies:
             cubie.position, cubie.rotation = round(cubie.world_position, 1), cubie.world_rotation
@@ -57,20 +58,20 @@ class RubikVisualizer(urs.Ursina):
                 cubie.parent = self.center
         return axis, rotation_degree
 
-    def rotate_side_without_animation(self, notation):
+    def rotate_side_without_animation(self, notation: str) -> None:
         axis, rotation_degree = self.rotate_cubie_positions(notation)
         exec(f'self.center.rotation_{axis} = {rotation_degree}')
 
-    def toggle_animation_trigger(self):
+    def toggle_animation_trigger(self) -> None:
         self.action = not self.action
 
-    def rotate_side_with_animation(self, notation):
+    def rotate_side_with_animation(self, notation: str) -> None:
         self.action = False
         axis, rotation_degree = self.rotate_cubie_positions(notation)
         eval(f'self.center.animate_rotation_{axis}({rotation_degree}, duration=.1)')
         urs.invoke(self.toggle_animation_trigger, delay=.35)
 
-    def input(self, key):
+    def input(self, key: str) -> None:
         super().input(key)
         if urs.held_keys['space'] and self.action or urs.held_keys['right arrow'] and self.action:
             if self.notation_index < len(self.solution_notations):
