@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import re
 from random import randint
+from typing import List, Dict
 
 import numpy as np
 import pandas as pd
@@ -24,7 +25,8 @@ class RubikState:
                           'F', 'F2', 'F\'', 'B', 'B2', 'B\'',
                           'U', 'U2', 'U\'', 'D', 'D2', 'D\'')
 
-    def __init__(self, properties, faces, notation, notation_path):
+    def __init__(self, properties: Dict[str, List[int]] | None,
+                 faces: str | None, notation: str, notation_path: List[str] | None):
         self.properties = RubikState.solved_properties if properties is None else copy.deepcopy(properties)
         self.cp = self.properties['corner_position']
         self.ep = self.properties['edge_position']
@@ -44,7 +46,7 @@ class RubikState:
             self.make_move(self.notation)
             self.notation_path.append(self.notation)
 
-    def make_move(self, move):
+    def make_move(self, move: str | List[str]) -> None:
         """
         in the first block of each notation, all permutations of cubies are made according
         to changes in positions and orientations.
@@ -182,7 +184,7 @@ class RubikState:
             case 'D\'': [d_clockwise() for _ in range(3)]
 
     @property
-    def f_cost(self):
+    def f_cost(self) -> int:
         """
         heuristic function formula is f(n) = g(n) + h(n).
         g(n) is the cost of reaching from the initial state to the current
@@ -191,7 +193,7 @@ class RubikState:
         return len(self.notation_path) + self.h_cost
 
     @property
-    def h_cost(self):
+    def h_cost(self) -> int:
         """
         estimation of the weights of the rubik's state.
         4 edge positions and 4 edge orientations.
@@ -210,17 +212,17 @@ class RubikState:
     def __lt__(self, other: RubikState) -> bool:
         return self.f_cost < other.f_cost
 
-    def is_target_state(self):
+    def is_target_state(self) -> bool:
         return self.h_cost == 0
 
-    def make_line_state(self):  # maybe
+    def make_line_state(self) -> str:
         make_one_line = lambda matrix: str(matrix.tolist())
         single_array = map(make_one_line, [
             self.top, self.left, self.front, self.right, self.back, self.bottom])
         return ''.join(re.findall(r'[a-z]', str(list(single_array))))
 
-    def __str__(self):
-        def sum_lines_np(*matrices):
+    def __str__(self) -> str:
+        def sum_lines_np(*matrices: np.ndarray) -> str:
             final_str = ''
             nums = len(matrices)
             for i in range(RubikState.cube_size):
@@ -243,7 +245,7 @@ class RubikState:
         return scheme + '\n\n' + self.make_line_state() + '\n\n' + df.to_string()
 
     @staticmethod
-    def make_random_notations(num):
+    def make_random_notations(num: int) -> List[str]:
         random_notations = list()
         for _ in range(num):
             notation = randint(0, 17)
@@ -251,5 +253,5 @@ class RubikState:
         return random_notations
 
     @staticmethod
-    def calculate_new_co(corner_orientation):
+    def calculate_new_co(corner_orientation: int) -> int:
         return 2 if corner_orientation == -1 else corner_orientation % 3
