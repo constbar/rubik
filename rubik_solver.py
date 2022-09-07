@@ -7,14 +7,12 @@ from rubik_state import RubikState
 
 
 class RubikSolver:
-    __slots__ = ('rubik_state', 'solution_time')
-
-    def __init__(self, shuffled_rubik_state):
+    def __init__(self, shuffled_rubik_state: RubikState):
         self.rubik_state = shuffled_rubik_state
         self.solution_time = .0
         self.solve_rubik()
 
-    def solve_rubik(self):
+    def solve_rubik(self) -> None:
         start_time = timeit.default_timer()
 
         self.solve_top_layer_cross()
@@ -28,7 +26,7 @@ class RubikSolver:
         self.solution_time = timeit.default_timer() - start_time
         self.reduce_repetitive_notations()
 
-    def solve_top_layer_cross(self):
+    def solve_top_layer_cross(self) -> None:
         """
         at this stage, a cross is assembled on the top layer. most often the top layer in the rubik is white.
         the edges of the cross will be in the correct positions and correct orientations.
@@ -39,7 +37,7 @@ class RubikSolver:
         at this stage, to optimize the number of moves, the ida star search algorithm is used to achieve
         the target state of the stage
         """
-        open_list = PriorityQueue()
+        open_list: PriorityQueue[RubikState] = PriorityQueue()
         threshold = self.rubik_state.f_cost
 
         while 42:
@@ -61,7 +59,7 @@ class RubikSolver:
                         thresholds.append(new_state.f_cost)
             threshold = min(thresholds)
 
-    def solve_top_layer_corners(self):
+    def solve_top_layer_corners(self) -> None:
         """
         at this stage, need to bring the corners of the top layer to the correct
         positions and in the correct orientations.
@@ -149,7 +147,7 @@ class RubikSolver:
                 self.rubik_state.make_move(['F\'', 'D', 'F'])
             self.rubik_state.make_move(['D'])
 
-    def solve_middle_layer_edges(self):
+    def solve_middle_layer_edges(self) -> None:
         """
         at this stage, need to bring the edges of the middle layer to the correct positions and orientations.
         as a result of this stage, the top 2 rubik's layers will be solved.
@@ -262,7 +260,7 @@ class RubikSolver:
                 i = 0
             i += 1
 
-    def solve_bottom_layer_cross(self):
+    def solve_bottom_layer_cross(self) -> None:
         """
         at this stage, a cross is built on the bottom layer. most often in rubik it is yellow.
         to look at the bottom layer correctly, mentally rotate the rubik along the X axis 2 times.
@@ -316,7 +314,7 @@ class RubikSolver:
             """ target stage already reached """
             return
 
-    def solve_positions_bottom_layer_corners(self):
+    def solve_positions_bottom_layer_corners(self) -> None:
         """
         at this stage, the corners should be in the correct positions.
         the correct location of the corners of the bottom layer looks like this
@@ -356,7 +354,7 @@ class RubikSolver:
             elif get_current_bool_corner_positions()[1] is True:
                 self.rubik_state.make_move(['R', 'D\'', 'L\'', 'D', 'R\'', 'D\'', 'L', 'D2'])
 
-    def solve_orientations_bottom_layer_corners(self):
+    def solve_orientations_bottom_layer_corners(self) -> None:
         """
         at this stage, the corners should be in the correct orientation.
         i.e. the orientations of all corners must be 0.
@@ -480,7 +478,7 @@ class RubikSolver:
                 self.rubik_state.make_move(['D2'])
                 self.rubik_state.make_move(['R\'', 'D\'', 'R', 'D\'', 'R\'', 'D2', 'R', 'D2'])
 
-    def solve_positions_bottom_layer_edges(self):
+    def solve_positions_bottom_layer_edges(self) -> None:
         """
         at this stage, the edges should be in the correct positions.
         target positions of the bottom layer edges look like this
@@ -528,7 +526,7 @@ class RubikSolver:
             case [9, 2, 1, 10]:
                 self.rubik_state.make_move(['F2', 'D', 'R', 'L\'', 'F2', 'R\'', 'L', 'D', 'F2'])
 
-    def reduce_repetitive_notations(self):
+    def reduce_repetitive_notations(self) -> None:
         new_path = list()
         for move in self.rubik_state.notation_path:
             if len(move) == 1:

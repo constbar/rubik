@@ -10,9 +10,6 @@ import pandas as pd
 
 
 class RubikState:
-    __slots__ = ('properties', 'cp', 'ep', 'co', 'eo',
-                 'faces', 'top', 'left', 'front', 'right',
-                 'back', 'bottom', 'notation', 'notation_path')
     cube_size = 3
     num_cube_faces = 6
     clockwise = (1, 0)
