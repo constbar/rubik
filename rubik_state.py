@@ -51,7 +51,7 @@ class RubikState:
         in the second block, the movements occur according to facelet-colors
         """
 
-        def l_clockwise():
+        def l_clockwise() -> None:
             self.cp[0], self.cp[4], self.cp[1], self.cp[5] = \
                 self.cp[5], self.cp[0], self.cp[4], self.cp[1]
             self.ep[4], self.ep[0], self.ep[5], self.ep[1] = \
@@ -63,7 +63,7 @@ class RubikState:
                 = self.top[:, [0]], self.back[:, [2]][::-1], \
                 self.bottom[:, [0]][::-1], self.front[:, [0]]
 
-        def r_clockwise():
+        def r_clockwise() -> None:
             self.cp[3], self.cp[7], self.cp[2], self.cp[6] = \
                 self.cp[6], self.cp[3], self.cp[7], self.cp[2]
             self.ep[6], self.ep[3], self.ep[7], self.ep[2] = \
@@ -75,7 +75,7 @@ class RubikState:
                 = self.bottom[:, [2]], self.front[:, [2]], \
                 self.top[:, [2]][::-1], self.back[:, [0]][::-1]
 
-        def f_clockwise():
+        def f_clockwise() -> None:
             self.cp[4], self.cp[3], self.cp[6], self.cp[1] = \
                 self.cp[1], self.cp[4], self.cp[3], self.cp[6]
             self.ep[5], self.ep[8], self.ep[6], self.ep[9] = \
@@ -94,7 +94,7 @@ class RubikState:
                 np.rot90(self.right[:, [0]][::-1]), \
                 np.rot90(self.bottom[[0]])[::-1]
 
-        def b_clockwise():
+        def b_clockwise() -> None:
             self.cp[7], self.cp[0], self.cp[5], self.cp[2] = \
                 self.cp[2], self.cp[7], self.cp[0], self.cp[5]
             self.ep[7], self.ep[11], self.ep[4], self.ep[10] = \
@@ -113,7 +113,7 @@ class RubikState:
                 np.rot90(self.left[:, [0]]), \
                 np.rot90(self.top[[0]])
 
-        def u_clockwise():
+        def u_clockwise() -> None:
             self.cp[0], self.cp[7], self.cp[3], self.cp[4] = \
                 self.cp[4], self.cp[0], self.cp[7], self.cp[3]
             self.ep[0], self.ep[11], self.ep[3], self.ep[8] = \
@@ -134,7 +134,7 @@ class RubikState:
                 = self.right[[0]], self.back[[0]], \
                 self.left[[0]], self.front[[0]]
 
-        def d_clockwise():
+        def d_clockwise() -> None:
             self.cp[1], self.cp[6], self.cp[2], self.cp[5] = \
                 self.cp[5], self.cp[1], self.cp[6], self.cp[2]
             self.ep[1], self.ep[9], self.ep[2], self.ep[10] = \
