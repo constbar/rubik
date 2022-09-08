@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 import argparse
+import subprocess
 
 from termcolor import colored
 
 from rubik_solver import RubikSolver
 from rubik_state import RubikState
-from rubik_ursina import RubikVisualizer
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -38,16 +38,15 @@ if __name__ == '__main__':
     solver = RubikSolver(shuffled_rubik_state)
     solved_rubik_state = solver.rubik_state
 
-    make_green_solution = lambda: colored(' '.join([i for i in solved_rubik_state.notation_path]), 'green')
+    green_solution = colored(' '.join([i for i in solved_rubik_state.notation_path]), 'green')
     if args.visualize:
-        rubik_visualizer = RubikVisualizer(shuffled_notations, solved_rubik_state.notation_path)
-        rubik_visualizer.run()
-
+        subprocess.run(['python3', 'rubik_ursina.py',
+                        ' '.join(shuffled_notations), ' '.join(solved_rubik_state.notation_path)])
     elif args.shuffle:
         print('notations for cube shuffling:', colored(' '.join([i for i in shuffled_notations]), 'yellow'))
-        print('notations for solving the cube:', make_green_solution())
+        print('notations for solving the cube:', green_solution)
     else:
-        print(make_green_solution())
+        print(green_solution)
 
     if args.verbose:
         print('number of moves to solve:', colored(str(len(solved_rubik_state.notation_path)), 'green'), 'moves')

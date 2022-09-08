@@ -4,6 +4,8 @@ from typing import List, Tuple
 
 import ursina as urs
 
+from rubik_state import RubikState
+
 
 class Cubie(urs.Entity):
     def __init__(self, coord: Tuple[int, ...]):
@@ -90,3 +92,16 @@ class RubikVisualizer(urs.Ursina):
                     self.rotate_side_with_animation(self.solution_notations[self.notation_index].strip('\''))
         elif key == 'escape':
             sys.exit()
+
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        sys.exit('wrong number of input variables')
+    shuffled_notations = sys.argv[1].split()
+    solution_notations = sys.argv[2].split()
+
+    if not all(nt in RubikState.possible_notations for
+               nt in set(shuffled_notations) | set(solution_notations)):
+        sys.exit(f"possible notations: {' '.join([i for i in RubikState.possible_notations])}")
+    rubik_visualizer = RubikVisualizer(shuffled_notations, solution_notations)
+    rubik_visualizer.run()
