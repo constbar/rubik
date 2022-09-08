@@ -50,4 +50,4 @@ if __name__ == '__main__':
 
     if args.verbose:
         print('number of moves to solve:', colored(str(len(solved_rubik_state.notation_path)), 'green'), 'moves')
-        print('rubik\'s solution time:', colored(round(solver.solution_time, 3), 'green'), 'secs')
+        print('rubik\'s solution time:', colored(str(round(solver.solution_time, 3)), 'green'), 'secs')
