@@ -75,7 +75,7 @@ class RubikSolver:
 
         while is_correct_corner_position() is False or is_correct_corner_orientation() is False:
             for corner in up_layer_corners:
-                """each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations"""
+                """ each corner has a state 0 or 1 or 2. in else performs 1 or 2 orientations """
                 if self.rubik_state.cp[corner] == corner:
                     if self.rubik_state.co[corner] == 0:
                         """ case where the corner is in its place and with a right orientation """
