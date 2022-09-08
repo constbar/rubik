@@ -24,7 +24,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.shuffle and args.shuffle < 1:
-        parser.error('need to specify the number of times to shuffle')
+        parser.error('need to specify the correct number of times to shuffle')
+    elif not args.notations and not args.shuffle or args.notations and args.notations.isspace():
+        parser.error('input cannot be empty')
 
     if args.notations:
         shuffled_notations = args.notations.split()
