@@ -23,7 +23,7 @@ class RubikState:
                           'U', 'U2', 'U\'', 'D', 'D2', 'D\'')
 
     def __init__(self, properties: Dict[str, List[int]] | None,
-                 faces: str | None, notation: str, notation_path: List[str] | None):
+                 faces: str | None, notation: str | List[str], notation_path: List[str] | None):
         self.properties = RubikState.solved_properties if properties is None else copy.deepcopy(properties)
         self.cp = self.properties['corner_position']
         self.ep = self.properties['edge_position']
