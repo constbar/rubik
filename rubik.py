@@ -42,8 +42,11 @@ if __name__ == '__main__':
 
     green_solution = colored(' '.join([i for i in solved_rubik_state.notation_path]), 'green')
     if args.visualize:
-        subprocess.run(['python3', 'rubik_ursina.py',
-                        ' '.join(shuffled_notations), ' '.join(solved_rubik_state.notation_path)])
+        try:
+            subprocess.run(['python3', 'rubik_ursina.py',
+                            ' '.join(shuffled_notations), ' '.join(solved_rubik_state.notation_path)])
+        except OSError:
+            parser.error('need to reduce the number of notations for submission to visualization')
     elif args.shuffle:
         print('notations for cube shuffling:', colored(' '.join([i for i in shuffled_notations]), 'yellow'))
         print('notations for solving the cube:', green_solution)
